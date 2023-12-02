@@ -58,6 +58,7 @@ const ChatHeadAudio = ({ apiCallSuccess, setApiCalSuccess, setTextContent }) => 
                 setOnLocalStorage('responses', JSON.stringify(response.data?.array));
             } catch (error) {
                 setLoading(false);
+                setRecordState(ENUM_STATUS.PAUSE);
                 console.error('Error sending audio to the server:', error);
             }
         }
@@ -87,7 +88,7 @@ const ChatHeadAudio = ({ apiCallSuccess, setApiCalSuccess, setTextContent }) => 
                 <img src="/images/text_only_blue.png" alt="Fysio.AI Logo" className="header-logo" />
             </div>
 
-            {!user?.isActive ? <></> : <>
+
                 <AudioReactRecorder
                     state={recordState}
                     onStop={onSave}
@@ -102,6 +103,7 @@ const ChatHeadAudio = ({ apiCallSuccess, setApiCalSuccess, setTextContent }) => 
                         className="control-btn start-btn"
                         title="Klik om de opname te starten"
                         onClick={startRecording}
+                        disabled={!user?.isActive}
                     >
                         <i className="fas fa-play"></i>Start Opname
                     </button>}
@@ -138,7 +140,7 @@ const ChatHeadAudio = ({ apiCallSuccess, setApiCalSuccess, setTextContent }) => 
                         </button>
                     </>}
                 </div>
-            </>}
+          
 
 
 
