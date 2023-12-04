@@ -47,13 +47,15 @@ const getAudioToText = async (path, fileName) => {
 }
 
 // get open ai chat message
-const getChatMessage = async (textMsg, filePath, totalChunk,) => {
+const getChatMessage = async (textMsg, transcript, filePath, totalChunk,) => {
     try {
         const chatCompletion = await openai.chat.completions.create({
             messages: [
-                { role: 'user', content: textMsg },
+                { role: 'system', content: textMsg },
+                { role: 'user', content: transcript },
             ],
-            model: 'gpt-4',
+            model: 'gpt-4-1106-preview',
+            response_format: {"type": "json_object"},
         });
         return chatCompletion.choices[0].message;
     } catch (error) {
@@ -73,7 +75,7 @@ const getChatMessage = async (textMsg, filePath, totalChunk,) => {
 }
 
 // get the prompt message
-const getPromptMessage = async (transcript) => {
+const getPromptMessage = async () => {
     const system_prompt_new = `
     Embedded with the expertise of a specialized physiotherapist assistant, you play a pivotal role in scrutinizing and interpreting dialogues between physiotherapists and patients. Your purpose extends beyond mere transcription; you are tasked with intelligently extracting and rephrasing invaluable information, organizing it into predefined categories, all while ensuring diverse sentence structures and maintaining context.
     
@@ -86,7 +88,7 @@ const getPromptMessage = async (transcript) => {
     - Persoonlijke determinanten: Extract and coherently synthesize personal factors from the patient’s perspective, including overall health and lifestyle, rephrased for diverse sentence structure.
     
     Your response should be as follows:
-    User: ${transcript}
+    User: {transcript}
     You :
     
     {
@@ -99,9 +101,7 @@ const getPromptMessage = async (transcript) => {
     [end]
     
     Your output must be a JSON object articulated in Dutch, excluding any additional elements. It should be detailed and comprehensive, using professional physiotherapy language, and ensure sentence variety to enhance readability.
-    
-    
-    
+
     `
 
     return system_prompt_new;
@@ -161,10 +161,10 @@ const CreateChat = catchAsync(
         }
 
         // promtmsg
-        const promtMsg = await getPromptMessage(text);
+        const promtMsg = await getPromptMessage();
 
         // get assistant response
-        const chatData = await getChatMessage(promtMsg, filePath, totalChunk);
+        const chatData = await getChatMessage(promtMsg, text, filePath, totalChunk);
 
         // Split the content into lines
         const lines = chatData.content.split('\n');
