@@ -17,9 +17,11 @@ const ChatNavbar = () => {
                 </button>
 
                 <div className="collapse navbar-collapse" id="navbarNav">
-                    <ul className="navbar-nav">
+                    <ul className="navbar-nav ">
                         <li className="nav-item active">
-                            <Link className="nav-link" to="/" style={{ textTransform: "capitalize" }}>Home <span className="sr-only">(current)</span></Link>
+                            <Link className="nav-link" to="/" style={{ textTransform: "capitalize", position: 'relative', top: '-10px' }}>
+                                Home <span className="sr-only">(current)</span>
+                            </Link>
                         </li>
                     </ul>
                 </div>

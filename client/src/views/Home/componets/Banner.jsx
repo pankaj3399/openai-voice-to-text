@@ -1,4 +1,4 @@
-
+import { MdArrowRightAlt } from "react-icons/md";
 const Banner = () => {
     return (
         <header data-aos="fade-down"
@@ -13,7 +13,7 @@ const Banner = () => {
                         <div className="banner-button-wrapper">
                             <a href="#contact" data-w-id="1429b358-4c3e-fc75-0db3-8b729619ff15" className="primary-button w-inline-block">
                                 <div>Kom in Contact.</div>
-                                <div data-w-id="1429b358-4c3e-fc75-0db3-8b729619ff18" className="button-icon"></div>
+                                <div data-w-id="1429b358-4c3e-fc75-0db3-8b729619ff18" className="button-icon"><MdArrowRightAlt /></div>
                             </a>
                             <div className="course-info-wrapper">
                                 <div data-w-id="0e03af90-2cb5-e065-7d93-07e9ac6cdbe6" className="course-info-block">

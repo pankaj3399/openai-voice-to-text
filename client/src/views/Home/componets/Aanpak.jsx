@@ -3,7 +3,7 @@ const Aanpak = () => {
     return (
         <aside id="aanpak" className="what-will-learn-section">
             <div data-w-id="fa7c9384-7b22-0d45-df68-c2c65ccb0e95" className="container">
-                <div className="vertical-middle-allign-wrapper">
+                <div className="vertical-middle-allign-wrapper" data-aos="fade-up">
                     <div className="section-headings-wrapper">
                         <h2 className="section-heading middle-allign less-width">Eenvoudig Resultaat☝️</h2>
                         <p className="learning-section-paragraph">
@@ -41,7 +41,7 @@ const Aanpak = () => {
                         <div id="w-node-_552381c1-c743-594c-0005-5415d3de7569-cf4aff70" className="logo-container">
                             <div className="logo-and-border-wrapper">
                                 <div data-w-id="552381c1-c743-594c-0005-5415d3de756b" className="logo-holder">
-                                    <div className="logo-box-shadow-div"><img src="/images/stopwatch.jpg" loading="lazy" alt=""
+                                    <div className="logo-box-shadow-div"><img src="/images/stopwatch-rm.png" loading="lazy" alt=""
                                         className="logo-image" /></div>
                                 </div>
                             </div>

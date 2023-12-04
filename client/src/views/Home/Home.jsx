@@ -27,7 +27,7 @@ const Home = () => {
 
   },[])
   return (
-    <>
+    <div style={{ background: 'white' }}>
 
       <Navbar />
 
@@ -44,7 +44,7 @@ const Home = () => {
       <Contact />
 
       <Footer />
-    </ >
+    </div>
   )
 }
 

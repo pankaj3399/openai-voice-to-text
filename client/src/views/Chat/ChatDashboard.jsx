@@ -5,20 +5,23 @@ import { useEffect, useState } from 'react'
 import ChatHeadAudio from './components/Layouts/ChatHeadAudio'
 import { modalData } from '../../configs/constants'
 import { getFromLocalStorage } from '../../hooks/helpers'
-import { atomToken } from '../../configs/states/atomState'
+import { atomToken, atomUser } from '../../configs/states/atomState'
 import { useAtom } from 'jotai'
 import { axiosPOST } from '../../hooks/axiosMethods'
 import toast from 'react-hot-toast'
 import ReactResponseModal from './partials/ReactResponseModal'
 
+const initialVal = { propertyOne: '', propertyTwo: '', propertyThree: '', propertyFour: '', propertyFive: '' }
+
 const ChatDashboard = () => {
 
     // global
     const [token] = useAtom(atomToken);
+    const [user] = useAtom(atomUser);
 
     // states
     const [textContent, setTextContent] = useState([]);
-    const [textbox, setTextbox] = useState({ propertyOne: '', propertyTwo: '', propertyThree: '', propertyFour: '', propertyFive: '' });
+    const [textbox, setTextbox] = useState(initialVal);
     const [apiCallSuccess, setApiCalSuccess] = useState(false);
 
     const [loading, setLoading] = useState('');
@@ -37,6 +40,7 @@ const ChatDashboard = () => {
     useEffect(() => {
 
         const data = JSON.parse(getFromLocalStorage('responses'));
+        const responseUserId = getFromLocalStorage('userId');
 
         if (textContent.length) {
             setTextbox({
@@ -46,18 +50,22 @@ const ChatDashboard = () => {
                 propertyFour: textContent[3],
                 propertyFive: textContent[4],
             })
-        } else if (data && data.length) {
-            setTextbox({
-                propertyOne: data[0],
-                propertyTwo: data[1],
-                propertyThree: data[2],
-                propertyFour: data[3],
-                propertyFive: data[4],
-            })
+        } else if (data && data.length && responseUserId) {
+            if (responseUserId === user._id) {
+                setTextbox({
+                    propertyOne: data[0],
+                    propertyTwo: data[1],
+                    propertyThree: data[2],
+                    propertyFour: data[3],
+                    propertyFive: data[4],
+                })
+            } else {
+                setTextbox(initialVal)
+            }
         } else {
             setTextContent([]);
         }
-    }, [textContent])
+    }, [textContent, user._id])
 
     // feedback api
     const sendFeedbackAPI = async (feedback, setFeedback, handleClose) => {

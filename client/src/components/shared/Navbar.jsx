@@ -22,7 +22,7 @@ const Navbar = () => {
             data-duration="400"
             id="navbar"
         >
-            <nav className="custom-container">
+            <nav className="custom-container" style={{ width: '100%' }}>
                 <div className="navbar-wrapper">
 
                     <Link to="/" aria-current="page" className="navbar-logo-wrapper w-nav-brand w--current">
