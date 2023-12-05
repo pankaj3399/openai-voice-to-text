@@ -32,6 +32,7 @@ const getAudioToText = async (path, fileName) => {
         const formData = new FormData();
         formData.append('file', audioData, { filename: fileName });
         formData.append('model', 'whisper-1');
+        formData.append('temperature', 0.0);
 
         const response = await axios.post(apiUrl, formData, {
             headers: {
@@ -56,6 +57,7 @@ const getChatMessage = async (textMsg, transcript, filePath, totalChunk,) => {
             ],
             model: 'gpt-4-1106-preview',
             response_format: {"type": "json_object"},
+            temperature: 0.0,
         });
         return chatCompletion.choices[0].message;
     } catch (error) {
