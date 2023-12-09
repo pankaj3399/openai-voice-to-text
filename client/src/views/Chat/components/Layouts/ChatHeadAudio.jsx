@@ -11,6 +11,7 @@ const ChatHeadAudio = ({
   apiCallSuccess,
   setApiCalSuccess,
   setTextContent,
+  access,
 }) => {
   // atom states
   const [token] = useAtom(atomToken);
@@ -24,22 +25,6 @@ const ChatHeadAudio = ({
   const [startTime, setStartTime] = useState(null);
   const [totalElapsedTime, setTotalElapsedTime] = useState(0);
   const [selectedLanguage, setSelectedLanguage] = useState("nl"); // Set the default language
-  const [isAudioPermissionEnabled, setIsAudioPermissionEnabled] =
-    useState(false);
-
-  useEffect(() => {
-    const permissions = navigator.mediaDevices.getUserMedia({
-      audio: true,
-      video: false,
-    });
-    permissions
-      .then(() => {
-        setIsAudioPermissionEnabled(true);
-      })
-      .catch(() => {
-        setIsAudioPermissionEnabled(false);
-      });
-  }, []);
 
   // handler
   const startRecording = () => {
@@ -78,7 +63,6 @@ const ChatHeadAudio = ({
         setTextContent(response.data?.array);
         setOnLocalStorage("responses", JSON.stringify(response.data?.array));
         setOnLocalStorage("userId", user._id);
-        
       } catch (error) {
         setLoading(false);
         setRecordState(ENUM_STATUS.PAUSE);
@@ -119,66 +103,63 @@ const ChatHeadAudio = ({
         />
       </div>
 
-      
-        <>
-          <AudioReactRecorder
-            state={recordState}
-            onStop={onSave}
-            canvasWidth={0}
-            canvasHeight={0}
-          />
+      <>
+        <AudioReactRecorder
+          state={recordState}
+          onStop={onSave}
+          canvasWidth={0}
+          canvasHeight={0}
+        />
 
-          <div className="button-group mt-4 mb-4 text-center">
-            {recordState === ENUM_STATUS.NONE && (
+        <div className="button-group mt-4 mb-4 text-center">
+          {recordState === ENUM_STATUS.NONE && (
+            <button
+              id="startButton"
+              className="control-btn start-btn"
+              title="Klik om de opname te starten"
+              onClick={startRecording}
+              disabled={!user?.isActive || !access}
+            >
+              <i className="fas fa-play"></i>Start Opname
+            </button>
+          )}
+
+          {recordState === ENUM_STATUS.START && (
+            <>
               <button
-                id="startButton"
-                className="control-btn start-btn"
-                title="Klik om de opname te starten"
-                onClick={startRecording}
-                disabled={!user?.isActive || !isAudioPermissionEnabled}
+                id="pauseButton"
+                className="control-btn pause-btn"
+                title="Klik om de opname te pauzeren"
+                onClick={pauseRecording}
               >
-                <i className="fas fa-play"></i>Start Opname
+                <i className="fas fa-pause"></i>Pauzeer Opname
               </button>
-            )}
+            </>
+          )}
 
-            {recordState === ENUM_STATUS.START && (
-              <>
-                <button
-                  id="pauseButton"
-                  className="control-btn pause-btn"
-                  title="Klik om de opname te pauzeren"
-                  onClick={pauseRecording}
-                >
-                  <i className="fas fa-pause"></i>Pauzeer Opname
-                </button>
-              </>
-            )}
+          {recordState === ENUM_STATUS.PAUSE && (
+            <>
+              <button
+                id="resumeButton"
+                className="control-btn resume-btn"
+                title="Klik hier om door te gaan met de huidige opname"
+                onClick={startRecording}
+              >
+                <i className="fas fa-play"></i>Doorgaan met Opnemen
+              </button>
 
-            {recordState === ENUM_STATUS.PAUSE && (
-              <>
-                <button
-                  id="resumeButton"
-                  className="control-btn resume-btn"
-                  title="Klik hier om door te gaan met de huidige opname"
-                  onClick={startRecording}
-                >
-                  <i className="fas fa-play"></i>Doorgaan met Opnemen
-                </button>
-
-                <button
-                  id="stopButton"
-                  className="control-btn stop-btn"
-                  title="Klik hier om de opname te stoppen en op te slaan"
-                  onClick={stopRecording}
-                >
-                  <i className="fas fa-stop"></i>Stop Opname en maak
-                  samenvatting
-                </button>
-              </>
-            )}
-          </div>
-        </>
-
+              <button
+                id="stopButton"
+                className="control-btn stop-btn"
+                title="Klik hier om de opname te stoppen en op te slaan"
+                onClick={stopRecording}
+              >
+                <i className="fas fa-stop"></i>Stop Opname en maak samenvatting
+              </button>
+            </>
+          )}
+        </div>
+      </>
 
       <div className="language-selection mt-4 mb-4 text-center">
         <div className="form-check form-check-inline">
@@ -217,6 +198,11 @@ const ChatHeadAudio = ({
             Engels
           </label>
         </div>
+        {!access && (
+          <div className="mt-3 mb-3 text-center warning-message">
+            Require microphone access to record audio.
+          </div>
+        )}
       </div>
 
       {/* <div className="mt-3 mb-3 text-center">
