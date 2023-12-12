@@ -19,7 +19,7 @@ const ChatNavbar = () => {
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav ">
                         <li className="nav-item active">
-                            <Link className="nav-link" to="/" style={{ textTransform: "capitalize", position: 'relative', top: '-10px' }}>
+                            <Link className="nav-link" to="/" style={{ textTransform: "capitalize", position: 'relative', top: '-13px' }}>
                                 Home <span className="sr-only">(current)</span>
                             </Link>
                         </li>
@@ -29,6 +29,7 @@ const ChatNavbar = () => {
                 <button
                     className="logout-icon"
                     onClick={() => logout()}
+                    style={{ background: 'rgb(246, 246, 246)', position: 'relative', top: '6px' }}
                 >
                     <i className="fas fa-sign-out-alt"></i>
                 </button>

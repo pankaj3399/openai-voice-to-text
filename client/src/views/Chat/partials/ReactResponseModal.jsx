@@ -5,6 +5,7 @@ const ReactResponseModal = ({ title, show, handleClose, loading, sendFeedbackAPI
 
     // states
     const [feedback, setFeedback] = useState('');
+    const [accuracy, setAccuracy] = useState(100);
 
     return (
         <Modal
@@ -22,8 +23,16 @@ const ReactResponseModal = ({ title, show, handleClose, loading, sendFeedbackAPI
 
                 <form id="feedbackForm1" className="feedback-form">
                     <label htmlFor="nauwkeurigheid1" className="elegant-label" style={{ fontWeight: 400 }}>Nauwkeurigheid (%)&nbsp;</label>
-                    <input type="number" id="nauwkeurigheid1" name="nauwkeurigheid1" min="0" max="100" value="100"
-                        className="elegant-input" />
+                    <input
+                        type="number"
+                        id="nauwkeurigheid1"
+                        name="nauwkeurigheid1"
+                        min="0"
+                        max="100"
+                        value={accuracy}
+                        onChange={(e) => setAccuracy(e.target.value)}
+                        className="elegant-input"
+                    />
 
                     <label htmlFor="extraOpmerkingen1" className="elegant-label" style={{ fontWeight: 400 }}>&nbsp;Opmerkingen</label>
                     <textarea
@@ -42,7 +51,7 @@ const ReactResponseModal = ({ title, show, handleClose, loading, sendFeedbackAPI
                 <button
                     type="button"
                     className="btn btn-primary elegant-btn-primary"
-                    onClick={() => sendFeedbackAPI(feedback, setFeedback, handleClose)}
+                    onClick={() => sendFeedbackAPI(feedback, setFeedback, handleClose, accuracy, title)}
                 >
                     {loading ? 'Sending...' : 'Verzenden'}
                 </button>

@@ -5,13 +5,23 @@ import { useAtom } from "jotai";
 import { atomToken, atomUser } from "../../../../configs/states/atomState";
 import { ENUM_STATUS } from "../../../../configs/constants";
 import StatusMessages from "../../partials/StatusMessages";
-import { setOnLocalStorage } from "../../../../hooks/helpers";
+import { removeFromLocalStorage, setOnLocalStorage } from "../../../../hooks/helpers";
+
+const initialVal = {
+  propertyOne: "",
+  propertyTwo: "",
+  propertyThree: "",
+  propertyFour: "",
+  propertyFive: "",
+};
 
 const ChatHeadAudio = ({
   apiCallSuccess,
   setApiCalSuccess,
   setTextContent,
   access,
+  textbox,
+  setTextbox
 }) => {
   // atom states
   const [token] = useAtom(atomToken);
@@ -84,6 +94,12 @@ const ChatHeadAudio = ({
     setSelectedLanguage(event.target.value);
   };
 
+  const handleEmptyCategories = () => {
+    setTextbox(initialVal);
+    removeFromLocalStorage("responses");
+    removeFromLocalStorage("userId");
+  }
+
   useEffect(() => {
     if (recordState === ENUM_STATUS.START) {
       setStartTime(new Date());
@@ -103,6 +119,15 @@ const ChatHeadAudio = ({
         />
       </div>
 
+      {textbox.propertyOne && <div style={{ position: 'absolute', top: '10px', right: '8px' }}>
+        <button
+          style={{ background: 'white' }}
+          onClick={handleEmptyCategories}
+        >
+          Empty Categories
+        </button>
+      </div>}
+
       <>
         <AudioReactRecorder
           state={recordState}
@@ -112,6 +137,17 @@ const ChatHeadAudio = ({
         />
 
         <div className="button-group mt-4 mb-4 text-center">
+          {(recordState === ENUM_STATUS.STOP && apiCallSuccess) && (
+            <button
+              id="startButton"
+              className="control-btn start-btn"
+              title="Reset"
+              onClick={() => setRecordState(ENUM_STATUS.NONE)}
+            >
+              <i className="fas fa-refresh"></i>Reset Opname
+            </button>
+          )}
+
           {recordState === ENUM_STATUS.NONE && (
             <button
               id="startButton"
@@ -205,16 +241,6 @@ const ChatHeadAudio = ({
         )}
       </div>
 
-      {/* <div className="mt-3 mb-3 text-center">
-                {((recordState !== ENUM_STATUS.NONE && !loading) && (recordState !== ENUM_STATUS.NONE && !apiCallSuccess)) &&
-                    <>
-                        Start Recording {totalElapsedTime > 0 && formatTime(totalElapsedTime)}
-                    </>
-                }
-
-                {(loading) && 'Bezig met verwerken⌛️' + '.'.repeat(loadingDots)}
-                {apiCallSuccess && 'Bekijk het resultaat! 🚀'}
-            </div> */}
       <StatusMessages
         loading={loading}
         apiCallSuccess={apiCallSuccess}
@@ -222,13 +248,12 @@ const ChatHeadAudio = ({
         totalElapsedTime={totalElapsedTime}
       />
 
-      <div
-        id="noSoundMessage"
+      {!user.isActive && <div
         className="mt-3 mb-3 text-center warning-message"
-        style={{ display: "none" }}
       >
-        Geen geluid gedetecteerd voor 10 seconden.
-      </div>
+        please contact info@fysio.ai to use the application
+      </div>}
+
     </>
   );
 };

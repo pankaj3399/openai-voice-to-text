@@ -7,14 +7,13 @@ import { axiosPOST } from '../../hooks/axiosMethods';
 import AuthWrap from './components/AuthWrap';
 import toast from 'react-hot-toast';
 
-const Login = () => {
+const ForgetPassword = () => {
 
     // global
     const navigate = useNavigate();
 
     // states
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('');
 
     const [loading, setLoading] = useState(false);
     const [token, setToken] = useAtom(atomToken);
@@ -29,10 +28,10 @@ const Login = () => {
     }, [navigate, isAuthenticate, token, user])
 
     // login action
-    const handleLogin = async () => {
+    const handleReset = async () => {
         try {
             // getting data
-            const getPOST = await axiosPOST('auth/signin', { username, password }, setLoading);
+            const getPOST = await axiosPOST('auth/signin', { email }, setLoading);
 
             // if success
             if (getPOST.success) {
@@ -40,8 +39,7 @@ const Login = () => {
                 setUser(getPOST.data.user);
                 setIsAuthenticate(true);
 
-                setUsername('');
-                setPassword('');
+                setEmail('');
 
                 setOnLocalStorage('token', getPOST.data.accessToken);
             }
@@ -52,27 +50,16 @@ const Login = () => {
     }
 
     return (
-        <AuthWrap authEl>
+        <AuthWrap>
             <form autoComplete="off" className=''>
 
                 <div className="form-group">
-                    <label className="font-weight-bold">Username:</label>
+                    <label className="font-weight-bold">Email:</label>
                     <input
-                        type="text"
-                        name="username"
+                        type="email"
+                        name="email"
                         className="form-control"
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label className="font-weight-bold">Password:</label>
-                    <input
-                        type="password"
-                        name="password"
-                        className="form-control"
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={(e) => setEmail(e.target.value)}
                         required
                     />
                 </div>
@@ -80,9 +67,9 @@ const Login = () => {
                 <button
                     type="button"
                     className="btn btn-custom btn-block"
-                    onClick={() => handleLogin()}
+                    onClick={() => handleReset()}
                 >
-                    {loading ? 'Loging In...' : 'Login'}
+                    {loading ? 'Reseting...' : 'Reset Password'}
                 </button>
 
             </form>
@@ -91,4 +78,4 @@ const Login = () => {
     )
 }
 
-export default Login
+export default ForgetPassword

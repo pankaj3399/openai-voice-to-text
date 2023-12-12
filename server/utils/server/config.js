@@ -11,4 +11,10 @@ export default {
 
     OPENAI_SECRET: process.env.OPENAI_SECRET,
     OPENAI_URL: process.env.OPENAI_URL,
+
+    MAILER_HOST: process.env.MAILER_HOST,
+    MAILER_USERNAME: process.env.MAILER_USERNAME,
+    MAILER_PASSWORD: process.env.MAILER_PASSWORD,
+    MAILER_GOOGLE_APP_PASSWORD: process.env.MAILER_GOOGLE_APP_PASSWORD,
+    FRONTEND_LINK: process.env.FRONTEND_LINK,
 };

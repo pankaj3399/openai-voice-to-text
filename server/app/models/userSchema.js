@@ -1,16 +1,27 @@
 import { Schema, model } from 'mongoose';
 import bcrypt from 'bcryptjs';
+import validator from "validator";
 
 const userSchema = new Schema({
     username: {
         type: String,
         required: [true, 'Username field is required']
     },
+    email: {
+        type: String,
+        unique: true,
+        validate: [validator.isEmail, 'Please provide a valid email.'],
+        required: [true, 'Email field is required']
+    },
     password: {
         type: String,
         required: [true, 'Password field is required'],
     },
     isActive: {
+        type: Boolean,
+        default: false
+    },
+    isVerified: {
         type: Boolean,
         default: false
     },
