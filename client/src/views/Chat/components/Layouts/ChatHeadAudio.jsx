@@ -61,6 +61,15 @@ const ChatHeadAudio = ({
   const onSave = async (audioData) => {
     setAudio(audioData);
 
+    console.log(audioData);
+
+    // Check if the audio blob has sound
+    if (!audioData.blob || audioData.blob.size === 0) {
+      // Show an error message or handle the lack of sound appropriately
+      console.error("Audio blob has no sound.");
+      return;
+    }
+
     // Send the audio file to the server
     if (audioData.blob) {
       const formData = new FormData();

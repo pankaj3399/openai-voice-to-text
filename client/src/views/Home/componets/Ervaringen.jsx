@@ -26,24 +26,15 @@ const Ervaringen = () => {
                         <h2 className="section-heading testimonial-heading">Onze meest tevreden klanten delen hun ervaringen!</h2>
                         <img
                             src="/images/Arrow_8Arrow_07.webp" loading="lazy"
-                            // style={{
-                            //     WebkitTransform: 'translate3d(0, 0, 0) scale3d(0, 0, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)',
-                            //     MozTransform: 'translate3d(0, 0, 0) scale3d(0, 0, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)',
-                            //     msTransform: 'translate3d(0, 0, 0) scale3d(0, 0, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)',
-                            //     transform: 'translate3d(0, 0, 0) scale3d(0, 0, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)',
-                            // }}
                             width="130.5"
                             alt=""
-                            // data-w-id="8daec031-388b-2c9f-21b1-2385c8f7c4c1"
                             className="arrow-image"
                         />
                         <img
                             src="/images/Group-10_1Group-10.webp"
                             loading="lazy"
-                            // style={{ opacity: 0 }}
                             width="53.5"
                             alt=""
-                            // data-w-id="4cc8af92-da52-7b88-6962-a8f6d4419a51"
                             className="box-svg"
                         />
                     </div>

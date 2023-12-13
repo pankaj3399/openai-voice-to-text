@@ -11,7 +11,6 @@ const Voordelen = () => {
                         data-aos="fade-right"
                         id="w-node-_5b273204-eab4-75f5-b636-fa663ee7fdf3-cf4aff70"
                         data-w-id="5b273204-eab4-75f5-b636-fa663ee7fdf3"
-                        // style={{ opacity: 0 }}
                         className="image-wrapper course-include-image-wrapper"
                     >
                         <img
@@ -64,7 +63,7 @@ const Voordelen = () => {
                             {checkpoints.map((checkpoint, index) => (
                                 <div key={index} className="checkpoint-block">
                                     <div className="check-icon" style={{ position: 'relative', top: '3px' }}>{checkpoint.icon}</div>
-                                    <div dangerouslySetInnerHTML={{ __html: checkpoint.text }} />
+                                    <div dangerouslySetInnerHTML={{ __html: `<div style="font-family: 'Inter', sans-serif;">${checkpoint.text}</div>` }} />
                                 </div>
                             ))}
                         </div>
