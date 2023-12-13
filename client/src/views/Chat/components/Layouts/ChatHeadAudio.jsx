@@ -32,6 +32,7 @@ const ChatHeadAudio = ({
   const [audio, setAudio] = useState(null);
   const [recordState, setRecordState] = useState(ENUM_STATUS.NONE);
   const [loading, setLoading] = useState(false);
+  const [noAudioErr, setNoAudioErr] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [totalElapsedTime, setTotalElapsedTime] = useState(0);
   const [selectedLanguage, setSelectedLanguage] = useState("nl"); // Set the default language
@@ -61,32 +62,41 @@ const ChatHeadAudio = ({
   const onSave = async (audioData) => {
     setAudio(audioData);
 
-    console.log(audioData);
+    // Create an audio context
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-    // Check if the audio blob has sound
-    if (!audioData.blob || audioData.blob.size === 0) {
-      // Show an error message or handle the lack of sound appropriately
-      console.error("Audio blob has no sound.");
-      return;
-    }
+    // Load the audio data
+    const audioBuffer = await audioContext.decodeAudioData(await audioData.blob.arrayBuffer());
 
-    // Send the audio file to the server
-    if (audioData.blob) {
-      const formData = new FormData();
-      formData.append("audio", audioData.blob, "audio.wav");
-      formData.append("language", selectedLanguage);
+    // Calculate the average audio level
+    const audioDataArray = audioBuffer.getChannelData(0);
+    const audioLevel = audioDataArray.reduce((sum, value) => sum + Math.abs(value), 0) / audioDataArray.length;
 
-      try {
-        const response = await axiosPOST("chat", formData, setLoading, token);
-        setApiCalSuccess(response.success);
-        setTextContent(response.data?.array);
-        setOnLocalStorage("responses", JSON.stringify(response.data?.array));
-        setOnLocalStorage("userId", user._id);
-      } catch (error) {
-        setLoading(false);
-        setRecordState(ENUM_STATUS.PAUSE);
-        console.error("Error sending audio to the server:", error);
+    const audioLevelThreshold = 0.01; // Adjust this threshold value
+
+    if (audioLevel >= audioLevelThreshold) {
+      setNoAudioErr(false);
+
+      // Send the audio file to the server
+      if (audioData.blob) {
+        const formData = new FormData();
+        formData.append("audio", audioData.blob, "audio.wav");
+        formData.append("language", selectedLanguage);
+
+        try {
+          const response = await axiosPOST("chat", formData, setLoading, token);
+          setApiCalSuccess(response.success);
+          setTextContent(response.data?.array);
+          setOnLocalStorage("responses", JSON.stringify(response.data?.array));
+          setOnLocalStorage("userId", user._id);
+        } catch (error) {
+          setLoading(false);
+          setRecordState(ENUM_STATUS.PAUSE);
+          console.error("Error sending audio to the server:", error);
+        }
       }
+    } else {
+      setNoAudioErr(true);
     }
   };
 
@@ -261,6 +271,12 @@ const ChatHeadAudio = ({
         className="mt-3 mb-3 text-center warning-message"
       >
         please contact info@fysio.ai to use the application
+      </div>}
+
+      {noAudioErr && <div
+        className="mt-3 mb-3 text-center warning-message"
+      >
+        Geen geluid gedetecteerd voor 10 seconden.
       </div>}
 
     </>
