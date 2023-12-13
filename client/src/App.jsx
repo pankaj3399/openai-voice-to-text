@@ -4,6 +4,7 @@ import RequireAuth from './components/shared/RequiredAuth';
 import useAuthCheck from './hooks/useAuthCheck';
 import ForgetPassword from './views/Auth/FogetPassswrod';
 import Login from './views/Auth/Login';
+import ResetPassowrd from './views/Auth/ResetPassowrd';
 import Signup from './views/Auth/Signup';
 import VerifyAccount from './views/Auth/VerifyAccount';
 import VerifyRequired from './views/Auth/verifyRequired';
@@ -39,7 +40,9 @@ function App() {
 
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
+
         <Route path="/reset-password" element={<ForgetPassword />} />
+        <Route path="/reset-password/:tokenParams" element={<ResetPassowrd />} />
 
         <Route path="/verify-required" element={<RequireAuth>
           <VerifyRequired />

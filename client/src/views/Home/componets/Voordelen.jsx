@@ -1,5 +1,5 @@
 import { checkpoints } from "../../../configs/constants"
-
+import '../styles/voordelen.css'
 
 const Voordelen = () => {
     return (
@@ -25,8 +25,7 @@ const Voordelen = () => {
                         />
 
                         <div
-                            data-w-id="7523990f-10a1-0a8f-7409-361b6812eedf"
-                            className="course-include-card-wrapper resources-card"
+                            className="course-include-card-wrapper resources-card animate-bounce"
                         >
                             <div className="course-include-card resource">
                                 <div className="resource-card-title">1</div>
@@ -45,9 +44,10 @@ const Voordelen = () => {
                                 </div>
                             </div>
                         </div>
+
                     </div>
                     <div
-                    data-aos="fade-left"
+                        data-aos="fade-left"
                         id="w-node-_53e795a1-4f68-ad5d-1c4e-8a8ee1a1afef-cf4aff70"
                         data-w-id="53e795a1-4f68-ad5d-1c4e-8a8ee1a1afef"
                         // style={{ opacity: 0 }}
