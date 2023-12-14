@@ -1,24 +1,25 @@
-import { useEffect, useState } from 'react'
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import AuthWrap from "./components/AuthWrap"
+import { useEffect, useState } from "react";
+import { atomIsAuthenticate, atomToken, atomUser } from "../../configs/states/atomState";
 import { useAtom } from "jotai";
-import { atomIsAuthenticate, atomToken, atomUser } from '../../configs/states/atomState';
-import { axiosPOST } from '../../hooks/axiosMethods';
-import AuthWrap from './components/AuthWrap';
-import toast from 'react-hot-toast';
+import { jwtDecode } from "jwt-decode";
+import toast from "react-hot-toast";
+import { axiosPatch } from '../../hooks/axiosMethods';
 
-const SignUp = () => {
+
+const ResetPassowrd = () => {
 
     // global
     const navigate = useNavigate();
+    const { tokenParams } = useParams();
 
     // states
-    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [isSuccess, setIsSuccess] = useState(false);
-
-    const [loading, setLoading] = useState(false);
     const [token] = useAtom(atomToken);
     const [isAuthenticate] = useAtom(atomIsAuthenticate);
     const [user] = useAtom(atomUser);
@@ -30,33 +31,29 @@ const SignUp = () => {
         }
     }, [navigate, isAuthenticate, token, user])
 
-    // signup action
-    const handleSignup = async () => {
+    useEffect(() => {
+        const decodedToken = jwtDecode(tokenParams);
 
-        if (!username || !email || !password || !confirmPassword) {
-            toast.error('All fields are required!')
-            return;
+        if (decodedToken.exp * 1000 > new Date().getTime()) {
+            setEmail(decodedToken.email)
+        } else {
+            setEmail('');
+            toast.error('Link expired!')
         }
+    }, [tokenParams])
 
-        if (password !== confirmPassword) {
-            toast.error('Password not matched!')
-            return;
-        }
-
+    const handleResetPassword = async () => {
         try {
             // getting data
-            const getPOST = await axiosPOST('auth/signup', { username, email, password }, setLoading);
+            const getPOST = await axiosPatch('auth/reset-password', { email, password, confirmPassword }, setLoading);
 
             // if success
             if (getPOST.success) {
-                setUsername('');
+                setEmail('');
                 setPassword('');
                 setConfirmPassword('');
-                setEmail('');
                 setIsSuccess(true);
-                toast.success(getPOST.message)
             }
-
         } catch (error) {
             setLoading(false);
             setIsSuccess(false);
@@ -66,20 +63,7 @@ const SignUp = () => {
 
     return (
         <AuthWrap authEl>
-
-            {isSuccess ? <p style={{ textAlign: 'justify' }}>You need to verify email. Please check your email </p> : <form autoComplete="off">
-
-                <div className="form-group">
-                    <label className="font-weight-bold">Username:</label>
-                    <input
-                        type="text"
-                        name="username"
-                        className="form-control"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                    />
-                </div>
+            {isSuccess ? <p style={{ textAlign: 'justify' }}>Password reset successfully. You can login now.</p> : <form autoComplete="off" className=''>
 
                 <div className="form-group">
                     <label className="font-weight-bold">Email:</label>
@@ -88,8 +72,7 @@ const SignUp = () => {
                         name="email"
                         className="form-control"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
+                        disabled
                     />
                 </div>
 
@@ -120,16 +103,14 @@ const SignUp = () => {
                 <button
                     type="button"
                     className="btn btn-custom btn-block"
-                    onClick={() => handleSignup()}
+                    onClick={() => handleResetPassword()}
                 >
-                    {loading ? 'Signing Up...' : 'Singup'}
+                    {loading ? 'Reseting...' : 'Reset Password'}
                 </button>
 
             </form>}
-
         </AuthWrap>
-
     )
 }
 
-export default SignUp
+export default ResetPassowrd

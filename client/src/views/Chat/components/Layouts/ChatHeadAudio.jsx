@@ -5,13 +5,23 @@ import { useAtom } from "jotai";
 import { atomToken, atomUser } from "../../../../configs/states/atomState";
 import { ENUM_STATUS } from "../../../../configs/constants";
 import StatusMessages from "../../partials/StatusMessages";
-import { setOnLocalStorage } from "../../../../hooks/helpers";
+import { removeFromLocalStorage, setOnLocalStorage } from "../../../../hooks/helpers";
+
+const initialVal = {
+  propertyOne: "",
+  propertyTwo: "",
+  propertyThree: "",
+  propertyFour: "",
+  propertyFive: "",
+};
 
 const ChatHeadAudio = ({
   apiCallSuccess,
   setApiCalSuccess,
   setTextContent,
   access,
+  textbox,
+  setTextbox
 }) => {
   // atom states
   const [token] = useAtom(atomToken);
@@ -22,6 +32,7 @@ const ChatHeadAudio = ({
   const [audio, setAudio] = useState(null);
   const [recordState, setRecordState] = useState(ENUM_STATUS.NONE);
   const [loading, setLoading] = useState(false);
+  const [noAudioErr, setNoAudioErr] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [totalElapsedTime, setTotalElapsedTime] = useState(0);
   const [selectedLanguage, setSelectedLanguage] = useState("nl"); // Set the default language
@@ -51,23 +62,41 @@ const ChatHeadAudio = ({
   const onSave = async (audioData) => {
     setAudio(audioData);
 
-    // Send the audio file to the server
-    if (audioData.blob) {
-      const formData = new FormData();
-      formData.append("audio", audioData.blob, "audio.wav");
-      formData.append("language", selectedLanguage);
+    // Create an audio context
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-      try {
-        const response = await axiosPOST("chat", formData, setLoading, token);
-        setApiCalSuccess(response.success);
-        setTextContent(response.data?.array);
-        setOnLocalStorage("responses", JSON.stringify(response.data?.array));
-        setOnLocalStorage("userId", user._id);
-      } catch (error) {
-        setLoading(false);
-        setRecordState(ENUM_STATUS.PAUSE);
-        console.error("Error sending audio to the server:", error);
+    // Load the audio data
+    const audioBuffer = await audioContext.decodeAudioData(await audioData.blob.arrayBuffer());
+
+    // Calculate the average audio level
+    const audioDataArray = audioBuffer.getChannelData(0);
+    const audioLevel = audioDataArray.reduce((sum, value) => sum + Math.abs(value), 0) / audioDataArray.length;
+
+    const audioLevelThreshold = 0.01; // Adjust this threshold value
+
+    if (audioLevel >= audioLevelThreshold) {
+      setNoAudioErr(false);
+
+      // Send the audio file to the server
+      if (audioData.blob) {
+        const formData = new FormData();
+        formData.append("audio", audioData.blob, "audio.wav");
+        formData.append("language", selectedLanguage);
+
+        try {
+          const response = await axiosPOST("chat", formData, setLoading, token);
+          setApiCalSuccess(response.success);
+          setTextContent(response.data?.array);
+          setOnLocalStorage("responses", JSON.stringify(response.data?.array));
+          setOnLocalStorage("userId", user._id);
+        } catch (error) {
+          setLoading(false);
+          setRecordState(ENUM_STATUS.PAUSE);
+          console.error("Error sending audio to the server:", error);
+        }
       }
+    } else {
+      setNoAudioErr(true);
     }
   };
 
@@ -83,6 +112,12 @@ const ChatHeadAudio = ({
   const handleLanguageChange = (event) => {
     setSelectedLanguage(event.target.value);
   };
+
+  const handleEmptyCategories = () => {
+    setTextbox(initialVal);
+    removeFromLocalStorage("responses");
+    removeFromLocalStorage("userId");
+  }
 
   useEffect(() => {
     if (recordState === ENUM_STATUS.START) {
@@ -103,6 +138,15 @@ const ChatHeadAudio = ({
         />
       </div>
 
+      {textbox.propertyOne && <div style={{ position: 'absolute', top: '10px', right: '8px' }}>
+        <button
+          style={{ background: 'white' }}
+          onClick={handleEmptyCategories}
+        >
+          Empty Categories
+        </button>
+      </div>}
+
       <>
         <AudioReactRecorder
           state={recordState}
@@ -112,6 +156,17 @@ const ChatHeadAudio = ({
         />
 
         <div className="button-group mt-4 mb-4 text-center">
+          {(recordState === ENUM_STATUS.STOP && apiCallSuccess) && (
+            <button
+              id="startButton"
+              className="control-btn start-btn"
+              title="Reset"
+              onClick={() => setRecordState(ENUM_STATUS.NONE)}
+            >
+              <i className="fas fa-refresh"></i>Reset Opname
+            </button>
+          )}
+
           {recordState === ENUM_STATUS.NONE && (
             <button
               id="startButton"
@@ -205,16 +260,6 @@ const ChatHeadAudio = ({
         )}
       </div>
 
-      {/* <div className="mt-3 mb-3 text-center">
-                {((recordState !== ENUM_STATUS.NONE && !loading) && (recordState !== ENUM_STATUS.NONE && !apiCallSuccess)) &&
-                    <>
-                        Start Recording {totalElapsedTime > 0 && formatTime(totalElapsedTime)}
-                    </>
-                }
-
-                {(loading) && 'Bezig met verwerken⌛️' + '.'.repeat(loadingDots)}
-                {apiCallSuccess && 'Bekijk het resultaat! 🚀'}
-            </div> */}
       <StatusMessages
         loading={loading}
         apiCallSuccess={apiCallSuccess}
@@ -222,13 +267,18 @@ const ChatHeadAudio = ({
         totalElapsedTime={totalElapsedTime}
       />
 
-      <div
-        id="noSoundMessage"
+      {!user.isActive && <div
         className="mt-3 mb-3 text-center warning-message"
-        style={{ display: "none" }}
+      >
+        please contact info@fysio.ai to use the application
+      </div>}
+
+      {noAudioErr && <div
+        className="mt-3 mb-3 text-center warning-message"
       >
         Geen geluid gedetecteerd voor 10 seconden.
-      </div>
+      </div>}
+
     </>
   );
 };

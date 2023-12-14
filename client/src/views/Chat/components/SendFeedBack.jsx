@@ -22,15 +22,6 @@ const SendFeedBack = ({ loading, sendFeedbackAPI }) => {
                 </button>
             </div>
 
-            {/* <FeedbackModal
-                id='feedbackModal'
-                label='feedbackModalLabel'
-                feedback={feedback}
-                setFeedback={setFeedback}
-                loading={loading}
-                sendFeedbackAPI={sendFeedbackAPI}
-                modalRef={modalRef}
-            /> */}
             <ReactFeedbackModal
                 feedback={feedback}
                 setFeedback={setFeedback}

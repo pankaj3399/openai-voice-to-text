@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAtom } from "jotai";
 import { atomIsAuthenticate, atomToken, atomUser } from '../../configs/states/atomState';
 import { setOnLocalStorage } from '../../hooks/helpers';
@@ -52,60 +52,40 @@ const Login = () => {
     }
 
     return (
-        <AuthWrap>
+        <AuthWrap authEl>
+            <form autoComplete="off" className=''>
 
-            <div className="container">
-                <div className="row justify-content-center align-items-center min-vh-100">
-                    <div className="col-lg-4 col-md-6 col-sm-8">
-                        <div className="card shadow-lg">
-                            <div className="card-body">
-
-                                <div className="text-center mb-4">
-                                    <img src="/images/fysio_ai_logo2.png" alt="Fysio.AI Logo" className="logo" />
-                                </div>
-
-                                <form autoComplete="off" className=''>
-
-                                    <div className="form-group">
-                                        <label className="font-weight-bold">Username:</label>
-                                        <input
-                                            type="text"
-                                            name="username"
-                                            className="form-control"
-                                            onChange={(e) => setUsername(e.target.value)}
-                                            required
-                                        />
-                                    </div>
-
-                                    <div className="form-group">
-                                        <label className="font-weight-bold">Password:</label>
-                                        <input
-                                            type="password"
-                                            name="password"
-                                            className="form-control"
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            required
-                                        />
-                                    </div>
-
-                                    <button
-                                        type="button"
-                                        className="btn btn-custom btn-block"
-                                        onClick={() => handleLogin()}
-                                    >
-                                        {loading ? 'Loging In...' : 'Login'}
-                                    </button>
-
-                                </form>
-
-                                <Link to="/" className="info-link">Terug</Link>
-
-                                <Link to="/signup" className="info-link">Register</Link>
-                            </div>
-                        </div>
-                    </div>
+                <div className="form-group">
+                    <label className="font-weight-bold">Username:</label>
+                    <input
+                        type="text"
+                        name="username"
+                        className="form-control"
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
+                    />
                 </div>
-            </div>
+
+                <div className="form-group">
+                    <label className="font-weight-bold">Password:</label>
+                    <input
+                        type="password"
+                        name="password"
+                        className="form-control"
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                </div>
+
+                <button
+                    type="button"
+                    className="btn btn-custom btn-block"
+                    onClick={() => handleLogin()}
+                >
+                    {loading ? 'Loging In...' : 'Login'}
+                </button>
+
+            </form>
         </AuthWrap>
 
     )

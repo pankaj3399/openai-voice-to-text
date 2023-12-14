@@ -40,3 +40,17 @@ export const axiosPOST = async (url, data, setLoad, token) => {
     setLoad(false);
     return response.data;
 }
+
+// patch method
+export const axiosPatch = async (url, data, setLoad, token) => {
+    setLoad(true);
+
+    const response = await axios.patch(`${mainUrl}${url}`, data, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    setLoad(false);
+    return response.data;
+}

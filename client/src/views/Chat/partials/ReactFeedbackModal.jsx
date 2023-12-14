@@ -37,7 +37,7 @@ const ReactFeedbackModal = ({ show, handleClose, loading, sendFeedbackAPI, feedb
                 <button
                     type="button"
                     className="btn btn-primary elegant-btn-primary"
-                    onClick={() => sendFeedbackAPI(feedback, setFeedback, handleClose)}
+                    onClick={() => sendFeedbackAPI(feedback, setFeedback, handleClose, 0, 'Algemene Feedback')}
                 >
                     {loading ? 'Sending...' : 'Verzenden'}
                 </button>

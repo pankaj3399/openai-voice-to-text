@@ -103,7 +103,7 @@ const ChatDashboard = () => {
   }, [textContent, user._id]);
 
   // feedback api
-  const sendFeedbackAPI = async (feedback, setFeedback, handleClose) => {
+  const sendFeedbackAPI = async (feedback, setFeedback, handleClose, accuracy, category) => {
     if (!feedback.length) {
       toast.error("Give the feedback input!");
       return;
@@ -113,7 +113,7 @@ const ChatDashboard = () => {
       // getting data
       const getPOST = await axiosPOST(
         "feedback",
-        { feedback },
+        { accuracy, category, feedback },
         setLoading,
         token
       );
@@ -132,12 +132,14 @@ const ChatDashboard = () => {
 
   return (
     <ChatDashboardWrap>
-      <div className="app-container">
+      <div className="app-container" style={{ position: 'relative' }}>
         <ChatHeadAudio
           setTextContent={setTextContent}
           apiCallSuccess={apiCallSuccess}
           setApiCalSuccess={setApiCalSuccess}
           access={access}
+          textbox={textbox}
+          setTextbox={setTextbox}
         />
 
         <SummaryBox
