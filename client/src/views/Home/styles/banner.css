@@ -1,17 +1,17 @@
-@keyframes bounce {
+@keyframes arrow {
 
     0%,
     to {
-        transform: translate3d(4px, 0px, 4px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg);
+        transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg);
     }
 
     50% {
-        transform: translate3d(-4px, 0px, -4px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg);
+        transform: translate3d(-18px, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(0deg) skew(0deg, 0deg);
     }
 }
 
 .banner-animate-bounce {
-    animation: bounce 1s infinite;
+    animation: arrow 1.2s infinite;
     transform-style: preserve-3d;
     will-change: transform;
 }
