@@ -1,8 +1,10 @@
 import { MdArrowRightAlt } from "react-icons/md";
+import '../styles/banner.css'
+
 const Banner = () => {
     return (
         <header data-aos="fade-down"
-        data-aos-duration="200" id="banner" data-w-id="2d04cc36-9470-def7-6d38-4376e157814d" className="hero-section">
+            data-aos-duration="200" id="banner" data-w-id="2d04cc36-9470-def7-6d38-4376e157814d" className="hero-section">
             <div className="custom-container">
                 <div className="w-layout-grid banner-grid">
                     <div id="w-node-_2e26540b-db34-503c-dd8c-cc4db4113f74-cf4aff70" className="banner-content">
@@ -13,7 +15,7 @@ const Banner = () => {
                         <div className="banner-button-wrapper">
                             <a href="#contact" data-w-id="1429b358-4c3e-fc75-0db3-8b729619ff15" className="primary-button w-inline-block">
                                 <div>Kom in Contact.</div>
-                                <div data-w-id="1429b358-4c3e-fc75-0db3-8b729619ff18" className="button-icon"><MdArrowRightAlt /></div>
+                                <div className="button-icon banner-animate-bounce"><MdArrowRightAlt /></div>
                             </a>
                             <div className="course-info-wrapper">
                                 <div data-w-id="0e03af90-2cb5-e065-7d93-07e9ac6cdbe6" className="course-info-block">
