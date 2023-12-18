@@ -27,7 +27,8 @@ const ForgetPassword = () => {
     }, [navigate, isAuthenticate, token, user])
 
     // login action
-    const handleReset = async () => {
+    const handleReset = async (e) => {
+        e.preventDefault();
         try {
             // getting data
             const getPOST = await axiosPOST('auth/forget-password', { email }, setLoading);
@@ -46,7 +47,7 @@ const ForgetPassword = () => {
 
     return (
         <AuthWrap authEl>
-            {isSuccess ? <p style={{ textAlign: 'justify' }}>Reset password link sent to your email. Please check your email </p> : <form autoComplete="off" className=''>
+            {isSuccess ? <p style={{ textAlign: 'justify' }}>Reset password link sent to your email. Please check your email </p> : <form autoComplete="off" onSubmit={handleReset}>
 
                 <div className="form-group">
                     <label className="font-weight-bold">Email:</label>
@@ -60,9 +61,8 @@ const ForgetPassword = () => {
                 </div>
 
                 <button
-                    type="button"
+                    type="submit"
                     className="btn btn-custom btn-block"
-                    onClick={() => handleReset()}
                 >
                     {loading ? 'Sending...' : 'Send Reset Link'}
                 </button>
