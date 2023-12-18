@@ -115,12 +115,6 @@ const ChatHeadAudio = ({
     setSelectedLanguage(event.target.value);
   };
 
-  const handleEmptyCategories = () => {
-    setTextbox(initialVal);
-    removeFromLocalStorage("responses");
-    removeFromLocalStorage("userId");
-  }
-
   const handleReset = () => {
     setRecordState(ENUM_STATUS.NONE)
     setApiCalSuccess(false);
@@ -149,15 +143,6 @@ const ChatHeadAudio = ({
           className="header-logo"
         />
       </div>
-
-      {textbox.propertyOne && <div style={{ position: 'absolute', top: '10px', right: '8px' }}>
-        <button
-          style={{ background: 'white' }}
-          onClick={handleEmptyCategories}
-        >
-          Empty Categories
-        </button>
-      </div>}
 
       <>
         <AudioReactRecorder
