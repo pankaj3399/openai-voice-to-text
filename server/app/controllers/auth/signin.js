@@ -9,12 +9,12 @@ import generateToken from "../../../utils/helpers/jwt/generateToken.js";
 const signin = catchAsync(
     async (req, res) => {
 
-        // checking username and password given
-        if (!req.body.username || !req.body.password) throw new ApiError(httpStatus.BAD_REQUEST, 'Fields are not there!');
+        // checking email and password given
+        if (!req.body.email || !req.body.password) throw new ApiError(httpStatus.BAD_REQUEST, 'Fields are not there!');
 
         // find user
-        const user = await User.findOne({ username: req.body.username }).lean();
-        if (!user) throw new ApiError(httpStatus.NOT_FOUND, 'Information mismatched!');
+        const user = await User.findOne({ email: req.body.email }).lean();
+        if (!user) throw new ApiError(httpStatus.NOT_FOUND, 'Account not exists!');
 
         // checking is valid password
         const isValidPassword = await bcrypt.compareSync(req.body.password, user.password);

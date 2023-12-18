@@ -3,9 +3,9 @@ import bcrypt from 'bcryptjs';
 import validator from "validator";
 
 const userSchema = new Schema({
-    username: {
+    companyName: {
         type: String,
-        required: [true, 'Username field is required']
+        required: [true, 'Company name field is required']
     },
     email: {
         type: String,

@@ -11,10 +11,7 @@ const signup = catchAsync(
     async (req, res) => {
 
         // finding user if exists
-        const user = await User.findOne({
-            username: req.body.username,
-            email: req.body.email
-        });
+        const user = await User.findOne({ email: req.body.email });
         if (user) throw new ApiError(httpStatus.BAD_REQUEST, 'Account already exists!');
 
         const token = jwt.sign(
@@ -26,8 +23,8 @@ const signup = catchAsync(
         const mailOptions = {
             from: "Fysio.ai <no-reply@fysio.ai.com>",
             to: req.body.email,
-            subject: `${req.body.username} Verify Account`,
-            html: `<p>${req.body.username} has initiated the FYSIO.AI account registration process. Please verify your account by clicking the following link:
+            subject: `Verify Fysio.ai Account`,
+            html: `<p>${req.body.email} has initiated the FYSIO.AI account registration process. Please verify your account by clicking the following link:
             <a href="${config.FRONTEND_LINK}verify/${token}">Click here</a>.</p>             `
         };
 

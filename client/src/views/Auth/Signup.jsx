@@ -12,7 +12,7 @@ const SignUp = () => {
     const navigate = useNavigate();
 
     // states
-    const [username, setUsername] = useState('');
+    const [companyName, setCompanyName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -33,7 +33,7 @@ const SignUp = () => {
     // signup action
     const handleSignup = async () => {
 
-        if (!username || !email || !password || !confirmPassword) {
+        if (!companyName || !email || !password || !confirmPassword) {
             toast.error('All fields are required!')
             return;
         }
@@ -45,11 +45,11 @@ const SignUp = () => {
 
         try {
             // getting data
-            const getPOST = await axiosPOST('auth/signup', { username, email, password }, setLoading);
+            const getPOST = await axiosPOST('auth/signup', { companyName, email, password }, setLoading);
 
             // if success
             if (getPOST.success) {
-                setUsername('');
+                setCompanyName('');
                 setPassword('');
                 setConfirmPassword('');
                 setEmail('');
@@ -70,13 +70,13 @@ const SignUp = () => {
             {isSuccess ? <p style={{ textAlign: 'justify' }}>You need to verify email. Please check your email </p> : <form autoComplete="off">
 
                 <div className="form-group">
-                    <label className="font-weight-bold">Username:</label>
+                    <label className="font-weight-bold">Company Name:</label>
                     <input
                         type="text"
-                        name="username"
+                        name="setCompanyName"
                         className="form-control"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        value={companyName}
+                        onChange={(e) => setCompanyName(e.target.value)}
                         required
                     />
                 </div>
