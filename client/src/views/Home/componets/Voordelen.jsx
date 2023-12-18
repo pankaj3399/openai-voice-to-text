@@ -3,13 +3,13 @@ import '../styles/voordelen.css'
 
 const Voordelen = () => {
     return (
-        <section id="voordelen" className="course-include-section">
+        <section className="course-include-section">
             <div className="course-includes-background"></div>
             <div className="custom-container">
-                <div className="w-layout-grid two-column-grid">
+                <div className="w-layout-grid two-column-grid" id="voordelen">
                     <div
                         data-aos="fade-right"
-                        data-aos-anchor-placement="top-bottom"
+                        data-aos-anchor-placement="top-center"
                         className="image-wrapper course-include-image-wrapper"
                     >
                         <img
