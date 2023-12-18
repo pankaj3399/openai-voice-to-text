@@ -39,8 +39,10 @@ const ChatHeadAudio = ({
 
   // handler
   const startRecording = () => {
+    setApiCalSuccess(false);
     if (recordState !== ENUM_STATUS.START) {
       setStartTime(new Date());
+      setTotalElapsedTime(0);
     }
     setRecordState(ENUM_STATUS.START);
   };
@@ -119,6 +121,16 @@ const ChatHeadAudio = ({
     removeFromLocalStorage("userId");
   }
 
+  const handleReset = () => {
+    setRecordState(ENUM_STATUS.NONE)
+    setApiCalSuccess(false);
+    setStartTime(new Date());
+    setTotalElapsedTime(0);
+    setTextbox(initialVal);
+    removeFromLocalStorage("responses");
+    removeFromLocalStorage("userId");
+  }
+
   useEffect(() => {
     if (recordState === ENUM_STATUS.START) {
       setStartTime(new Date());
@@ -156,18 +168,18 @@ const ChatHeadAudio = ({
         />
 
         <div className="button-group mt-4 mb-4 text-center">
-          {(recordState === ENUM_STATUS.STOP && apiCallSuccess) && (
+          {(recordState === ENUM_STATUS.STOP && apiCallSuccess) || textbox.propertyThree.length ? (
             <button
               id="startButton"
               className="control-btn start-btn"
               title="Reset"
-              onClick={() => setRecordState(ENUM_STATUS.NONE)}
+              onClick={handleReset}
             >
               <i className="fas fa-refresh"></i>Reset Opname
             </button>
-          )}
+          ) : null}
 
-          {recordState === ENUM_STATUS.NONE && (
+          {(recordState === ENUM_STATUS.NONE && !textbox.propertyThree.length) ? (
             <button
               id="startButton"
               className="control-btn start-btn"
@@ -177,7 +189,7 @@ const ChatHeadAudio = ({
             >
               <i className="fas fa-play"></i>Start Opname
             </button>
-          )}
+          ) : null}
 
           {recordState === ENUM_STATUS.START && (
             <>
