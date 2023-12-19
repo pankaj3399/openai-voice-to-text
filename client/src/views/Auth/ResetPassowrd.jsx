@@ -42,7 +42,8 @@ const ResetPassowrd = () => {
         }
     }, [tokenParams])
 
-    const handleResetPassword = async () => {
+    const handleResetPassword = async (e) => {
+        e.preventDefault();
         try {
             // getting data
             const getPOST = await axiosPatch('auth/reset-password', { email, password, confirmPassword }, setLoading);
@@ -63,7 +64,7 @@ const ResetPassowrd = () => {
 
     return (
         <AuthWrap authEl>
-            {isSuccess ? <p style={{ textAlign: 'justify' }}>Password reset successfully. You can login now.</p> : <form autoComplete="off" className=''>
+            {isSuccess ? <p style={{ textAlign: 'justify' }}>Password reset successfully. You can login now.</p> : <form autoComplete="off" onSubmit={handleResetPassword}>
 
                 <div className="form-group">
                     <label className="font-weight-bold">Email:</label>
@@ -101,9 +102,8 @@ const ResetPassowrd = () => {
                 </div>
 
                 <button
-                    type="button"
+                    type="submit"
                     className="btn btn-custom btn-block"
-                    onClick={() => handleResetPassword()}
                 >
                     {loading ? 'Reseting...' : 'Reset Password'}
                 </button>

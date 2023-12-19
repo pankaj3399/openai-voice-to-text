@@ -29,10 +29,13 @@ const Login = () => {
     }, [navigate, isAuthenticate, token, user])
 
     // login action
-    const handleLogin = async () => {
+    const handleLogin = async (e) => {
+        e.preventDefault();
         try {
             // getting data
             const getPOST = await axiosPOST('auth/signin', { email, password }, setLoading);
+
+            console.log(getPOST);
 
             // if success
             if (getPOST.success) {
@@ -53,7 +56,7 @@ const Login = () => {
 
     return (
         <AuthWrap authEl>
-            <form autoComplete="off" className=''>
+            <form autoComplete="off" onSubmit={handleLogin}>
 
                 <div className="form-group">
                     <label className="font-weight-bold">Email:</label>
@@ -78,9 +81,8 @@ const Login = () => {
                 </div>
 
                 <button
-                    type="button"
+                    type="submit"
                     className="btn btn-custom btn-block"
-                    onClick={() => handleLogin()}
                 >
                     {loading ? 'Loging In...' : 'Login'}
                 </button>

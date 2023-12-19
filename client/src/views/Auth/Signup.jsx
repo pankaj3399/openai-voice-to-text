@@ -31,8 +31,8 @@ const SignUp = () => {
     }, [navigate, isAuthenticate, token, user])
 
     // signup action
-    const handleSignup = async () => {
-
+    const handleSignup = async (e) => {
+        e.preventDefault();
         if (!companyName || !email || !password || !confirmPassword) {
             toast.error('All fields are required!')
             return;
@@ -67,7 +67,7 @@ const SignUp = () => {
     return (
         <AuthWrap authEl>
 
-            {isSuccess ? <p style={{ textAlign: 'justify' }}>You need to verify email. Please check your email </p> : <form autoComplete="off">
+            {isSuccess ? <p style={{ textAlign: 'justify' }}>You need to verify email. Please check your email </p> : <form autoComplete="off" onSubmit={handleSignup}>
 
                 <div className="form-group">
                     <label className="font-weight-bold">Company Name:</label>
@@ -118,9 +118,8 @@ const SignUp = () => {
                 </div>
 
                 <button
-                    type="button"
+                    type="submit"
                     className="btn btn-custom btn-block"
-                    onClick={() => handleSignup()}
                 >
                     {loading ? 'Signing Up...' : 'Singup'}
                 </button>

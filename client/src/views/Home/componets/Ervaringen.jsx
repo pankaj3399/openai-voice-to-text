@@ -13,13 +13,6 @@ const Ervaringen = () => {
         <section data-aos="fade-up" id="ervaringen" data-w-id="aedc08d9-087c-6779-cbd7-c802287c773c" className="testimonial-section">
             <div
                 data-aos="fade-up"
-                style={{
-                    // opacity: 0,
-                    // WebkitTransform: 'translate3d(0, 50%, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)',
-                    // MozTransform: 'translate3d(0, 50%, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)',
-                    // msTransform: 'translate3d(0, 50%, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)',
-                    // transform: 'translate3d(0, 50%, 0) scale3d(1, 1, 1) rotateX(0) rotateY(0) rotateZ(0) skew(0, 0)',
-                }}
                 className="custom-container">
                 <div className="testimonial-heading-and-svg">
                     <div className="horizaontal-div gap">
@@ -29,6 +22,7 @@ const Ervaringen = () => {
                             width="130.5"
                             alt=""
                             className="arrow-image"
+                            data-aos="zoom-in"
                         />
                         <img
                             src="/images/Group-10_1Group-10.webp"
