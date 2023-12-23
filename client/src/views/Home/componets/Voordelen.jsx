@@ -1,16 +1,58 @@
+import { useEffect } from "react";
 import { checkpoints } from "../../../configs/constants"
 import '../styles/voordelen.css'
 
 const Voordelen = () => {
+
+    useEffect(() => {
+        // Get the element to be animated
+        const element = document.querySelector('.course-include-image-wrapper');
+
+        // Function to check if an element is in the viewport
+        const isInViewport = (element) => {
+
+            const rect = element.getBoundingClientRect();
+            const viewportHeight = (window.innerHeight || document.documentElement.clientHeight);
+
+            return (
+                rect.top >= -500 &&
+                rect.left >= 0 &&
+                rect.bottom <= viewportHeight + 600 &&
+                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+            );
+        };
+
+        // Function to handle scroll event
+        const handleScroll = () => {
+            if (isInViewport(element)) {
+                // Add the 'custom-fade-right' class when the element is in the viewport
+                element.classList.add('custom-fade-right');
+                element.classList.remove('hideImg');
+            } else {
+                element.classList.remove('custom-fade-right');
+                element.classList.add('hideImg');
+            }
+        };
+
+        // Attach the handleScroll function to the scroll event
+        window.addEventListener('scroll', handleScroll);
+
+        // Clean up the event listener on component unmount
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []); // Run this effect only once on mount
+
     return (
         <section className="course-include-section">
             <div className="course-includes-background"></div>
             <div className="custom-container">
                 <div className="w-layout-grid two-column-grid" id="voordelen">
+
                     <div
-                        data-aos="fade-right"
-                        data-aos-anchor-placement="top-center"
-                        className="image-wrapper course-include-image-wrapper"
+                        // data-aos="fade-right"
+                        // data-aos-anchor-placement="top-center"
+                        className="image-wrapper course-include-image-wrapper hideImg"
                     >
                         <img
                             src="/images/vrouw_laptop-1.webp"

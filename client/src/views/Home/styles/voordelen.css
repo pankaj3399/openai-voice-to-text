@@ -15,3 +15,23 @@
     transform-style: preserve-3d;
     will-change: transform;
 }
+
+@keyframes customFadeRight {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.custom-fade-right {
+    animation: customFadeRight 1s ease-in-out;
+}
+
+.hideImg {
+    opacity: 0;
+}

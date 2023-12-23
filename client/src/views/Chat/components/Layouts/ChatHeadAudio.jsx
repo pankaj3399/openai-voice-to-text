@@ -80,7 +80,7 @@ const ChatHeadAudio = ({
       setNoAudioErr(false);
 
       // Send the audio file to the server
-      if (audioData.blob) {
+      if (audioData.blob && !noAudioErr) {
         const formData = new FormData();
         formData.append("audio", audioData.blob, "audio.wav");
         formData.append("language", selectedLanguage);
