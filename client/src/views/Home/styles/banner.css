@@ -47,7 +47,7 @@
 }
 
 .custom-fade-up {
-    animation: customFadeUp 1s ease-in-out;
+    animation: customFadeUp 1.5s ease-in-out;
 }
 
 .hideImg {
