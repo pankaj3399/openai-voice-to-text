@@ -1,7 +1,8 @@
 import { MdArrowRightAlt } from "react-icons/md";
 import '../styles/banner.css'
 import BannerHeadWrap from "../partials/Banner/BannerHeadWrap";
-import CourseInfoWrap from "../partials/Banner/CourseInfoWrap";
+// import CourseInfoWrap from "../partials/Banner/CourseInfoWrap";
+import CourseInfoWrapMobile from "../partials/Banner/CourseInfoWrapMobile";
 
 const Banner = () => {
     return (
@@ -17,7 +18,8 @@ const Banner = () => {
                                 <div>Kom in Contact.</div>
                                 <div className="button-icon banner-animate-bounce"><MdArrowRightAlt /></div>
                             </a>
-                            <CourseInfoWrap />
+                            {/* <CourseInfoWrap /> */}
+                            <CourseInfoWrapMobile />
                         </div>
                     </div>
                     <div className="banner-image-wrapper">
