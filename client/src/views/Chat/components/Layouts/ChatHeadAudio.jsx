@@ -76,7 +76,7 @@ const ChatHeadAudio = ({
 
     const audioLevelThreshold = 0.01; // Adjust this threshold value
 
-    if (audioLevel >= audioLevelThreshold) {
+    if (audioLevel >= audioLevelThreshold && totalElapsedTime>=10) {
       setNoAudioErr(false);
 
       // Send the audio file to the server
@@ -84,6 +84,7 @@ const ChatHeadAudio = ({
         const formData = new FormData();
         formData.append("audio", audioData.blob, "audio.wav");
         formData.append("language", selectedLanguage);
+        formData.append("time", totalElapsedTime);
 
         try {
           const response = await axiosPOST("chat", formData, setLoading, token);
@@ -121,6 +122,7 @@ const ChatHeadAudio = ({
     setStartTime(new Date());
     setTotalElapsedTime(0);
     setTextbox(initialVal);
+    setNoAudioErr(false);
     removeFromLocalStorage("responses");
     removeFromLocalStorage("userId");
   }
@@ -153,7 +155,7 @@ const ChatHeadAudio = ({
         />
 
         <div className="button-group mt-4 mb-4 text-center">
-          {(recordState === ENUM_STATUS.STOP && apiCallSuccess) || textbox.propertyThree.length ? (
+          {(recordState === ENUM_STATUS.STOP && (apiCallSuccess || noAudioErr)) || textbox.propertyThree.length ? (
             <button
               id="startButton"
               className="control-btn start-btn"

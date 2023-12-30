@@ -7,6 +7,7 @@ import ApiError from "../../../utils/errors/ApiError.js";
 import FormData from "form-data";
 import OpenAI from "openai";
 import config from "../../../utils/server/config.js";
+import User from "../../models/userSchema.js";
 
 const apiKey = String(config.OPENAI_SECRET);
 const apiUrl = String(config.OPENAI_URL);
@@ -150,8 +151,33 @@ const CreateChat = catchAsync(async (req, res) => {
   const fileName = req.file.filename;
   const fileSizeInMB = req.file.size / (1024 * 1024);
   const language = req.body.language;
+  const time = req.body.time;
   let text;
   let totalChunk;
+  const user = await User.findById(req.user._id);
+  if (user?.timesUsed >= user?.usageLimit) {
+    // send mail
+    const mailOptions = {
+      from: "Fysio.ai <no-reply@fysio.ai.com>",
+      to: user.email,
+      subject: `Usage Limit Exceeded`,
+      html: `<p>You have exceeded the usage limit for your account.Please contact info@fysio.ai for more details.</p>`,
+    };
+
+    send_mail(mailOptions);
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      "Your account has exceeded usage limit"
+    );
+  } else if (
+    new Date() < new Date(user?.startDate) ||
+    new Date() > new Date(user?.endDate)
+  ) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      "The date should be between startDate and endDate of your account"
+    );
+  }
 
   if (fileSizeInMB > 24) {
     totalChunk = await splitAudio(filePath);
@@ -205,6 +231,16 @@ const CreateChat = catchAsync(async (req, res) => {
   const medischeValue = extractValue("Medische gezondheidsdeterminanten");
   const omgevingsValue = extractValue("Omgevingsdeterminanten");
   const persoonlijkeValue = extractValue("Persoonlijke determinanten");
+
+  await User.updateOne(
+    { _id: req.user._id },
+    {
+      $set: {
+        timesUsed: user?.timesUsed ? user?.timesUsed + 1 : 1,
+        secondsUsed: user?.secondsUsed ? user?.secondsUsed + time : time,
+      },
+    }
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
