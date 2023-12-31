@@ -17,7 +17,7 @@ const VerifyAccount = () => {
     useEffect(() => {
         if (isSuccess) {
             navigate('/login');
-            toast.success('Email is verified you can login')
+            toast.success('Email is geverifieerd, je kunt nu inloggen')
         }
     }, [isSuccess, navigate])
 
@@ -42,7 +42,7 @@ const VerifyAccount = () => {
                     setIsSuccss(false);
                 }
             } else {
-                toast.error('Token expired! Contact Admin')
+                toast.error('Token verlopen! Neem contact op met info@fysio.ai.')
             }
 
         }
@@ -51,7 +51,7 @@ const VerifyAccount = () => {
 
     return (
         <AuthWrap>
-            <div style={{ textAlign: 'center' }}>{laoding ? 'Loading....' : isSuccess && 'Verified'}</div>
+            <div style={{ textAlign: 'center' }}>{laoding ? 'Laden....' : isSuccess && 'Geverifieerd'}</div>
         </AuthWrap>
     )
 }

@@ -1,0 +1,24 @@
+runtime: nodejs20 # specify the Node.js version you are using
+env: standard
+service: backend
+instance_class: F1 # Instance class specifies the compute resources for your app (F1 is the smallest available)
+
+# Environment variables:
+env_variables:
+  PORT: 8080 # Google App Engine uses 8080 by default
+  MONGO_CONNECTION: mongodb+srv://database_tim:y51c364z296wbf@usersfysioai.8m26xsr.mongodb.net/?retryWrites=true&w=majority
+  TOKEN_SECRET: blabla123
+  TOKEN_SECRET_EXP: '1d'
+  OPENAI_SECRET: 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
+  OPENAI_URL: 'https://api.openai.com/v1/audio/transcriptions'
+
+automatic_scaling:
+  target_cpu_utilization: 0.65
+  min_instances: 0
+  max_instances: 2
+
+# Handlers define how to respond to HTTP requests:
+handlers:
+  - url: /.*
+    script: auto
+    secure: always # ensures that all traffic uses HTTPS

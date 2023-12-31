@@ -47,7 +47,7 @@ const ForgetPassword = () => {
 
     return (
         <AuthWrap authEl>
-            {isSuccess ? <p style={{ textAlign: 'justify' }}>Reset password link sent to your email. Please check your email </p> : <form autoComplete="off" onSubmit={handleReset}>
+            {isSuccess ? <p style={{ textAlign: 'justify' }}>Resetlink verstuurd. Check je e-mail! </p> : <form autoComplete="off" onSubmit={handleReset}>
 
                 <div className="form-group">
                     <label className="font-weight-bold">Email:</label>

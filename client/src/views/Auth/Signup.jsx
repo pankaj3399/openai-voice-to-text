@@ -67,10 +67,10 @@ const SignUp = () => {
     return (
         <AuthWrap authEl>
 
-            {isSuccess ? <p style={{ textAlign: 'justify' }}>You need to verify email. Please check your email </p> : <form autoComplete="off" onSubmit={handleSignup}>
+            {isSuccess ? <p style={{ textAlign: 'justify' }}>Bekijk je e-mail om je account te verifiëren.</p> : <form autoComplete="off" onSubmit={handleSignup}>
 
                 <div className="form-group">
-                    <label className="font-weight-bold">Company Name:</label>
+                    <label className="font-weight-bold">Bedrijf:</label>
                     <input
                         type="text"
                         name="setCompanyName"
@@ -94,7 +94,7 @@ const SignUp = () => {
                 </div>
 
                 <div className="form-group">
-                    <label className="font-weight-bold">Password:</label>
+                    <label className="font-weight-bold">Wachtwoord:</label>
                     <input
                         type="password"
                         name="password"
@@ -106,7 +106,7 @@ const SignUp = () => {
                 </div>
 
                 <div className="form-group">
-                    <label className="font-weight-bold">Confirm Password:</label>
+                    <label className="font-weight-bold">Bevestig Wachtwoord:</label>
                     <input
                         type="password"
                         name="confirmPassword"

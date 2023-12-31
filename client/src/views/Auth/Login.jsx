@@ -70,7 +70,7 @@ const Login = () => {
                 </div>
 
                 <div className="form-group">
-                    <label className="font-weight-bold">Password:</label>
+                    <label className="font-weight-bold">Wachtwoord:</label>
                     <input
                         type="password"
                         name="password"

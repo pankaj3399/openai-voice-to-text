@@ -26,10 +26,15 @@ const ForgetPassword = catchAsync(
         const mailOptions = {
             from: "Fysio.ai <no-reply@fysio.ai.com>",
             to: req.body.email,
-            subject: `${req.body.email} Reset Passowrd`,
-            html: `<p>${req.body.email} has initiated the FYSIO.AI account reset password process. Continue the process of reset password by clicking the following link within 5 minutes:
-            <a href="${config.FRONTEND_LINK}reset-password/${token}">Click here</a>.</p>`
+            subject: `Wachtwoord resetten voor Fysio.ai-account`,
+            html: `<p>Beste gebruiker,</p>
+                   <p>U heeft onlangs een verzoek ingediend om uw wachtwoord te resetten voor uw Fysio.ai-account. Klik op de onderstaande link om uw wachtwoord te resetten. Deze link is 5 minuten geldig:</p>
+                   <p><a href="${config.FRONTEND_LINK}reset-password/${token}">Wachtwoord resetten</a></p>
+                   <p>Als u geen wachtwoordreset heeft aangevraagd, negeer dan deze e-mail.</p>
+                   <p>Vriendelijke groeten,</p>
+                   <p>Het Fysio.ai Team</p>`
         };
+
 
         send_mail(mailOptions);
 

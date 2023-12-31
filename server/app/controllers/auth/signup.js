@@ -23,10 +23,15 @@ const signup = catchAsync(
         const mailOptions = {
             from: "Fysio.ai <no-reply@fysio.ai.com>",
             to: req.body.email,
-            subject: `Verify Fysio.ai Account`,
-            html: `<p>${req.body.email} has initiated the FYSIO.AI account registration process. Please verify your account by clicking the following link:
-            <a href="${config.FRONTEND_LINK}verify/${token}">Click here</a>.</p>             `
+            subject: `Verifieer uw Fysio.ai-account`,
+            html: `<p>Beste,</p>
+                   <p>Bedankt voor uw registratie bij Fysio.ai. Klik op de link hieronder om uw e-mailadres te bevestigen en uw account te activeren:</p>
+                   <p><a href="${config.FRONTEND_LINK}verify/${token}">Account bevestigen</a></p>
+                   <p>Heeft u zich niet geregistreerd? Dan kunt u deze e-mail negeren.</p>
+                   <p>Vriendelijke groeten,</p>
+                   <p>Fysio.ai Team</p>`
         };
+
 
         send_mail(mailOptions);
 

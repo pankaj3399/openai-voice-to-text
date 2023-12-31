@@ -64,7 +64,7 @@ const ResetPassowrd = () => {
 
     return (
         <AuthWrap authEl>
-            {isSuccess ? <p style={{ textAlign: 'justify' }}>Password reset successfully. You can login now.</p> : <form autoComplete="off" onSubmit={handleResetPassword}>
+            {isSuccess ? <p style={{ textAlign: 'justify' }}>Wachtwoord succesvol gereset. Je kunt nu inloggen.</p> : <form autoComplete="off" onSubmit={handleResetPassword}>
 
                 <div className="form-group">
                     <label className="font-weight-bold">Email:</label>
@@ -78,7 +78,7 @@ const ResetPassowrd = () => {
                 </div>
 
                 <div className="form-group">
-                    <label className="font-weight-bold">Password:</label>
+                    <label className="font-weight-bold">Wachtwoord:</label>
                     <input
                         type="password"
                         name="password"
@@ -90,7 +90,7 @@ const ResetPassowrd = () => {
                 </div>
 
                 <div className="form-group">
-                    <label className="font-weight-bold">Confirm Password:</label>
+                    <label className="font-weight-bold">Bevestig Wachtwoord:</label>
                     <input
                         type="password"
                         name="confirmPassword"

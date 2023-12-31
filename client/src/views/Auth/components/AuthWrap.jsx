@@ -51,14 +51,15 @@ const AuthWrap = ({ children, authEl }) => {
 
                                 {children}
 
-                                {(location.pathname !== '/reset-password' && authEl) && <div className='d-flex align-items-center justify-content-center mt-3'>
-                                    <p className='mb-0 me-1'>Forget your password?</p>
+                            {(location.pathname !== '/reset-password' && authEl) && <div className='d-flex align-items-center justify-content-center mt-3'>
+                                    <p className='mb-0 me-1'>Wachtwoord vergeten?</p>
                                     <Link
                                         to="/reset-password"
                                         className="info-link mt-0"
                                         style={{ position: 'relative', top: '-1px' }}
-                                    >Reset it Here</Link>
+                                    >Reset het hier</Link>
                                 </div>}
+
 
 
                             </div>

@@ -1,0 +1,12 @@
+dispatch:
+  - url: "backend.fysio.ai/*"
+    service: backend
+
+  - url: "testing.fysio.ai/*"
+    service: testing
+
+  - url: "fysio.ai/*"
+    service: default
+
+  - url: "www.fysio.ai/*"
+    service: default

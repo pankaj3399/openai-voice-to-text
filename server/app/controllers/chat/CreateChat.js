@@ -37,6 +37,7 @@ const getAudioToText = async (path, fileName, languageCode) => {
     formData.append("file", audioData, { filename: fileName });
     formData.append("model", "whisper-1");
     formData.append("language", languageCode);
+    formData.append('temperature', 0.0);
 
     const response = await axios.post(apiUrl, formData, {
       headers: {
