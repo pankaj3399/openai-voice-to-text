@@ -5,7 +5,10 @@ import { useAtom } from "jotai";
 import { atomToken, atomUser } from "../../../../configs/states/atomState";
 import { ENUM_STATUS } from "../../../../configs/constants";
 import StatusMessages from "../../partials/StatusMessages";
-import { removeFromLocalStorage, setOnLocalStorage } from "../../../../hooks/helpers";
+import {
+  removeFromLocalStorage,
+  setOnLocalStorage,
+} from "../../../../hooks/helpers";
 
 const initialVal = {
   propertyOne: "",
@@ -21,12 +24,11 @@ const ChatHeadAudio = ({
   setTextContent,
   access,
   textbox,
-  setTextbox
+  setTextbox,
 }) => {
   // atom states
   const [token] = useAtom(atomToken);
   const [user] = useAtom(atomUser);
-
   // states
   // eslint-disable-next-line no-unused-vars
   const [audio, setAudio] = useState(null);
@@ -65,18 +67,23 @@ const ChatHeadAudio = ({
     setAudio(audioData);
 
     // Create an audio context
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const audioContext = new (window.AudioContext ||
+      window.webkitAudioContext)();
 
     // Load the audio data
-    const audioBuffer = await audioContext.decodeAudioData(await audioData.blob.arrayBuffer());
+    const audioBuffer = await audioContext.decodeAudioData(
+      await audioData.blob.arrayBuffer()
+    );
 
     // Calculate the average audio level
     const audioDataArray = audioBuffer.getChannelData(0);
-    const audioLevel = audioDataArray.reduce((sum, value) => sum + Math.abs(value), 0) / audioDataArray.length;
+    const audioLevel =
+      audioDataArray.reduce((sum, value) => sum + Math.abs(value), 0) /
+      audioDataArray.length;
 
     const audioLevelThreshold = 0.01; // Adjust this threshold value
 
-    if (audioLevel >= audioLevelThreshold && totalElapsedTime>=10) {
+    if (audioLevel >= audioLevelThreshold && totalElapsedTime >= 10) {
       setNoAudioErr(false);
 
       // Send the audio file to the server
@@ -117,7 +124,7 @@ const ChatHeadAudio = ({
   };
 
   const handleReset = () => {
-    setRecordState(ENUM_STATUS.NONE)
+    setRecordState(ENUM_STATUS.NONE);
     setApiCalSuccess(false);
     setStartTime(new Date());
     setTotalElapsedTime(0);
@@ -125,7 +132,8 @@ const ChatHeadAudio = ({
     setNoAudioErr(false);
     removeFromLocalStorage("responses");
     removeFromLocalStorage("userId");
-  }
+  };
+
 
   useEffect(() => {
     if (recordState === ENUM_STATUS.START) {
@@ -155,7 +163,9 @@ const ChatHeadAudio = ({
         />
 
         <div className="button-group mt-4 mb-4 text-center">
-          {(recordState === ENUM_STATUS.STOP && (apiCallSuccess || noAudioErr)) || textbox.propertyThree.length ? (
+          {(recordState === ENUM_STATUS.STOP &&
+            (apiCallSuccess || noAudioErr)) ||
+          textbox.propertyThree.length ? (
             <button
               id="startButton"
               className="control-btn start-btn"
@@ -166,13 +176,19 @@ const ChatHeadAudio = ({
             </button>
           ) : null}
 
-          {(recordState === ENUM_STATUS.NONE && !textbox.propertyThree.length) ? (
+          {recordState === ENUM_STATUS.NONE && !textbox.propertyThree.length ? (
             <button
               id="startButton"
               className="control-btn start-btn"
               title="Klik om de opname te starten"
               onClick={startRecording}
-              disabled={!user?.isActive || !access}
+              disabled={
+                !user?.isActive ||
+                !access ||
+                user?.timesUsed >= user?.usageLimit ||
+                new Date() < new Date(user?.startDate) ||
+                new Date() > new Date(user?.endDate)
+              }
             >
               <i className="fas fa-play"></i>Start Opname
             </button>
@@ -266,18 +282,20 @@ const ChatHeadAudio = ({
         totalElapsedTime={totalElapsedTime}
       />
 
-      {!user.isActive && <div
-        className="mt-3 mb-3 text-center warning-message"
-      >
-        please contact info@fysio.ai to use the application
-      </div>}
+      {(!user.isActive ||
+        user?.timesUsed >= user?.usageLimit ||
+        new Date() < new Date(user?.startDate) ||
+        new Date() > new Date(user?.endDate)) && (
+        <div className="mt-3 mb-3 text-center warning-message">
+          please contact info@fysio.ai to use the application
+        </div>
+      )}
 
-      {noAudioErr && <div
-        className="mt-3 mb-3 text-center warning-message"
-      >
-        Geen geluid gedetecteerd voor 10 seconden.
-      </div>}
-
+      {noAudioErr && (
+        <div className="mt-3 mb-3 text-center warning-message">
+          Geen geluid gedetecteerd voor 10 seconden.
+        </div>
+      )}
     </>
   );
 };

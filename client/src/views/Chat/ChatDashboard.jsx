@@ -98,7 +98,7 @@ const ChatDashboard = () => {
         setTextbox(initialVal);
       }
     } else {
-      setTextContent([]);
+      // setTextContent([]);
     }
   }, [textContent, user._id]);
 
