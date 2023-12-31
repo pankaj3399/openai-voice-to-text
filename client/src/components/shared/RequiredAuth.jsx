@@ -11,7 +11,6 @@ const RequireAuth = ({ children }) => {
     const [token] = useAtom(atomToken);
     const [isAuthenticate] = useAtom(atomIsAuthenticate);
     const [user] = useAtom(atomUser);
-
     return (
         isAuthenticate && token && user
             ? children

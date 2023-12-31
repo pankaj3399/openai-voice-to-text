@@ -3,12 +3,14 @@ import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { useAtom } from "jotai";
-import { atomIsAuthenticate, atomToken, atomUser } from "../configs/states/atomState";
+import {
+  atomIsAuthenticate,
+  atomToken,
+  atomUser,
+} from "../configs/states/atomState";
 import { getFromLocalStorage, removeFromLocalStorage } from "./helpers";
 
-
 export default function useAuthCheck() {
-
   // global
   const navigate = useNavigate();
 
@@ -19,20 +21,18 @@ export default function useAuthCheck() {
   const [token, setToken] = useAtom(atomToken);
   const [isAuthenticate, setIsAuthenticate] = useAtom(atomIsAuthenticate);
   const [user, setUser] = useAtom(atomUser);
+  const accessToken = getFromLocalStorage("token");
+  const headers = { Authorization: `Bearer ${accessToken}` };
 
   useEffect(() => {
     if (authChecked) return;
-
-    const accessToken = getFromLocalStorage("token");
-    const headers = { Authorization: `Bearer ${accessToken}` };
 
     if (accessToken) {
       const decodedToken = jwtDecode(accessToken);
 
       if (decodedToken.exp * 1000 < new Date().getTime()) {
-
         // atom sates
-        setToken('');
+        setToken("");
         setIsAuthenticate(false);
         setUser(null);
 
@@ -41,10 +41,10 @@ export default function useAuthCheck() {
         setAuthenticated(true);
 
         // remove from storage
-        removeFromLocalStorage('token');
+        removeFromLocalStorage("token");
 
         // navigate
-        navigate('/login');
+        navigate("/login");
       } else {
         // Check if already authenticated
         if (!authenticated) {
@@ -52,7 +52,6 @@ export default function useAuthCheck() {
           fetch(`${import.meta.env.VITE_BACKEND_URL}auth/profile`, { headers })
             .then((response) => response.json())
             .then((data) => {
-
               // set atom sates
               setUser(data.data);
               setIsAuthenticate(true);
@@ -65,13 +64,13 @@ export default function useAuthCheck() {
               console.error(error);
 
               // set atom sates
-              setToken('');
+              setToken("");
               setIsAuthenticate(false);
               setUser(null);
 
               // remove from storage
-              removeFromLocalStorage('token');
-              navigate('/login');
+              removeFromLocalStorage("token");
+              navigate("/login");
             });
         }
         setAuthChecked(true);
@@ -86,5 +85,29 @@ export default function useAuthCheck() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate, authChecked, authenticated]);
 
-  return authenticated;
+  const refetchUser = async () => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}auth/profile`,
+        { headers }
+      );
+      const data = await res.json();
+
+      // set atom sates
+      setUser(data.data);
+    } catch (error) {
+      console.error(error);
+
+      // set atom sates
+      setToken("");
+      setIsAuthenticate(false);
+      setUser(null);
+
+      // remove from storage
+      removeFromLocalStorage("token");
+      navigate("/login");
+    }
+  };
+
+  return { authenticated, refetchUser };
 }

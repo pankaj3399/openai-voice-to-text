@@ -9,6 +9,7 @@ import {
   removeFromLocalStorage,
   setOnLocalStorage,
 } from "../../../../hooks/helpers";
+import useAuthCheck from "../../../../hooks/useAuthCheck";
 
 const initialVal = {
   propertyOne: "",
@@ -29,6 +30,7 @@ const ChatHeadAudio = ({
   // atom states
   const [token] = useAtom(atomToken);
   const [user] = useAtom(atomUser);
+  const {refetchUser} = useAuthCheck();
   // states
   // eslint-disable-next-line no-unused-vars
   const [audio, setAudio] = useState(null);
@@ -55,6 +57,11 @@ const ChatHeadAudio = ({
     }
     setRecordState(ENUM_STATUS.PAUSE);
   };
+
+  const startPausedRecording = () => {
+    setRecordState(ENUM_STATUS.START);
+    setStartTime(new Date())
+  }
 
   const stopRecording = () => {
     if (recordState === ENUM_STATUS.START) {
@@ -99,6 +106,7 @@ const ChatHeadAudio = ({
           setTextContent(response.data?.array);
           setOnLocalStorage("responses", JSON.stringify(response.data?.array));
           setOnLocalStorage("userId", user._id);
+          await refetchUser();
         } catch (error) {
           setLoading(false);
           setRecordState(ENUM_STATUS.PAUSE);
@@ -213,7 +221,7 @@ const ChatHeadAudio = ({
                 id="resumeButton"
                 className="control-btn resume-btn"
                 title="Klik hier om door te gaan met de huidige opname"
-                onClick={startRecording}
+                onClick={startPausedRecording}
               >
                 <i className="fas fa-play"></i>Doorgaan met Opnemen
               </button>

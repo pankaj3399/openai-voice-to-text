@@ -37,7 +37,7 @@ const getAudioToText = async (path, fileName, languageCode) => {
     formData.append("file", audioData, { filename: fileName });
     formData.append("model", "whisper-1");
     formData.append("language", languageCode);
-    formData.append('temperature', 0.0);
+    formData.append("temperature", 0.0);
 
     const response = await axios.post(apiUrl, formData, {
       headers: {
@@ -238,7 +238,9 @@ const CreateChat = catchAsync(async (req, res) => {
     {
       $set: {
         timesUsed: user?.timesUsed ? user?.timesUsed + 1 : 1,
-        secondsUsed: user?.secondsUsed ? user?.secondsUsed + time : time,
+        secondsUsed: user?.secondsUsed
+          ? user?.secondsUsed + parseInt(time)
+          : parseInt(time),
       },
     }
   );

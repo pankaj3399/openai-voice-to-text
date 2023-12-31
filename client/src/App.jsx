@@ -15,7 +15,7 @@ import { Route, Routes } from 'react-router-dom';
 function App() {
 
   // authentication checking
-  const authChecked = useAuthCheck();
+  const {authenticated: authChecked} = useAuthCheck();
 
   // states
   // const [token, setToken] = useAtom(atomToken);
