@@ -42,7 +42,7 @@ const AuthWrap = ({ children, authEl }) => {
                                     <p
                                         style={{ color: location.pathname === '/signup' ? '#00113f' : '#666' }}
                                     >
-                                        Signup
+                                        Aanmelden
                                     </p>
                                 </Link>
                             </div>}

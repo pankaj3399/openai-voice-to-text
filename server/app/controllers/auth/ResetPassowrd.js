@@ -12,11 +12,11 @@ const ResetPassword = catchAsync(
         const user = await User.findOne({
             email: req.body.email
         });
-        if (!user) throw new ApiError(httpStatus.BAD_REQUEST, 'Account not exists!');
+        if (!user) throw new ApiError(httpStatus.BAD_REQUEST, 'Account niet gevonden. ');
 
         // checking pass matched or not
         if (req.body.password !== req.body.confirmPassword) {
-            throw new ApiError(httpStatus.BAD_REQUEST, 'Password not matched!');
+            throw new ApiError(httpStatus.BAD_REQUEST, 'Verkeerde wachtwoord');
         }
 
         // hashing password

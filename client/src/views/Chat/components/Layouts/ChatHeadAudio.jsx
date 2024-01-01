@@ -295,13 +295,13 @@ const ChatHeadAudio = ({
         new Date() < new Date(user?.startDate) ||
         new Date() > new Date(user?.endDate)) && (
         <div className="mt-3 mb-3 text-center warning-message">
-          please contact info@fysio.ai to use the application
+          Geen credits (meer) beschikbaar. Neem contact op via info@fysio.ai.
         </div>
       )}
 
       {noAudioErr && (
         <div className="mt-3 mb-3 text-center warning-message">
-          Geen geluid gedetecteerd voor 10 seconden.
+          Geen geluid gedetecteerd, controleer je audio.
         </div>
       )}
     </>

@@ -154,7 +154,7 @@ const ChatHeader = () => {
             </div>
 
             <div id="noSoundMessage" className="mt-3 mb-3 text-center warning-message" style={{ display: 'none' }}>
-                Geen geluid gedetecteerd voor 10 seconden.
+                Geen geluid gedetecteerd, controleer je audio.
             </div>
 
 

@@ -64,7 +64,7 @@ const ForgetPassword = () => {
                     type="submit"
                     className="btn btn-custom btn-block"
                 >
-                    {loading ? 'Sending...' : 'Send Reset Link'}
+                    {loading ? 'Versturen...' : 'Stuur Resetlink'}
                 </button>
 
             </form>}

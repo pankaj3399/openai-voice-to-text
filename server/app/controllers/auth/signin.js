@@ -14,11 +14,11 @@ const signin = catchAsync(
 
         // find user
         const user = await User.findOne({ email: req.body.email }).lean();
-        if (!user) throw new ApiError(httpStatus.NOT_FOUND, 'Account not exists!');
+        if (!user) throw new ApiError(httpStatus.NOT_FOUND, 'Account niet gevonden. ');
 
         // checking is valid password
         const isValidPassword = await bcrypt.compareSync(req.body.password, user.password);
-        if (!isValidPassword) throw new ApiError(httpStatus.UNAUTHORIZED, 'Credential mismatch!');
+        if (!isValidPassword) throw new ApiError(httpStatus.UNAUTHORIZED, 'Inloggegevens komen niet overeen');
 
         // token
         const token = generateToken(user, false);

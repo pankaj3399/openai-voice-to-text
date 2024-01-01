@@ -84,7 +84,7 @@ const Login = () => {
                     type="submit"
                     className="btn btn-custom btn-block"
                 >
-                    {loading ? 'Loging In...' : 'Login'}
+                    {loading ? 'Inloggen...' : 'Login'}
                 </button>
 
             </form>

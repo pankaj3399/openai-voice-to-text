@@ -161,14 +161,15 @@ const CreateChat = catchAsync(async (req, res) => {
     const mailOptions = {
       from: "Fysio.ai <no-reply@fysio.ai.com>",
       to: user.email,
-      subject: `Usage Limit Exceeded`,
-      html: `<p>You have exceeded the usage limit for your account.Please contact info@fysio.ai for more details.</p>`,
+      subject: `Gebruikslimiet Overtroffen`,
+      html: `<p>Je hebt de gebruikslimiet van je account overschreden. Neem voor meer details contact op via info@fysio.ai.</p>`,
     };
+
 
     send_mail(mailOptions);
     throw new ApiError(
       httpStatus.BAD_REQUEST,
-      "Your account has exceeded usage limit"
+      "Je hebt de gebruikslimiet van je account overschreden."
     );
   } else if (
     new Date() < new Date(user?.startDate) ||
@@ -176,7 +177,7 @@ const CreateChat = catchAsync(async (req, res) => {
   ) {
     throw new ApiError(
       httpStatus.BAD_REQUEST,
-      "The date should be between startDate and endDate of your account"
+      "De datum moet liggen tussen de startdatum en einddatum van je account"
     );
   }
 
