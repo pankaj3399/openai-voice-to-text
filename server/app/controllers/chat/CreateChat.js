@@ -58,6 +58,7 @@ const getAudioToText = async (path, fileName, languageCode) => {
 // get open ai chat message
 const getChatMessage = async (textMsg, transcript, filePath, totalChunk) => {
   try {
+    console.log(transcript, "Sending this to chat gpt....");
     const chatCompletion = await openai.chat.completions.create({
       messages: [
         { role: "system", content: textMsg },
@@ -165,7 +166,6 @@ const CreateChat = catchAsync(async (req, res) => {
       subject: `Gebruikslimiet Overtroffen`,
       html: `<p>Je hebt de gebruikslimiet van je account overschreden. Neem voor meer details contact op via info@fysio.ai.</p>`,
     };
-
 
     send_mail(mailOptions);
     throw new ApiError(
