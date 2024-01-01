@@ -195,6 +195,7 @@ const CreateChat = catchAsync(async (req, res) => {
         `chunk_${i}.wav`,
         language
       );
+      console.log(`The output of chunk_${i}.wav is ${chunkText}`);
       fullText += chunkText + " "; // Assuming you want a space between chunk texts
     }
 
