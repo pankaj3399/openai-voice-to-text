@@ -74,23 +74,23 @@ const ChatHeadAudio = ({
     setAudio(audioData);
 
     // Create an audio context
-    const audioContext = new (window.AudioContext ||
-      window.webkitAudioContext)();
+    // const audioContext = new (window.AudioContext ||
+    //   window.webkitAudioContext)();
 
     // Load the audio data
-    const audioBuffer = await audioContext.decodeAudioData(
-      await audioData.blob.arrayBuffer()
-    );
+    // const audioBuffer = await audioContext.decodeAudioData(
+    //   await audioData.blob.arrayBuffer()
+    // );
 
     // Calculate the average audio level
-    const audioDataArray = audioBuffer.getChannelData(0);
-    const audioLevel =
-      audioDataArray.reduce((sum, value) => sum + Math.abs(value), 0) /
-      audioDataArray.length;
+    // const audioDataArray = audioBuffer.getChannelData(0);
+    // const audioLevel =
+    //   audioDataArray.reduce((sum, value) => sum + Math.abs(value), 0) /
+    //   audioDataArray.length;
 
-    const audioLevelThreshold = 0.01; // Adjust this threshold value
+    // const audioLevelThreshold = 0.01; // Adjust this threshold value
 
-    if (audioLevel >= audioLevelThreshold && totalElapsedTime >= 10) {
+    if (totalElapsedTime >= 10) {
       setNoAudioErr(false);
 
       // Send the audio file to the server
