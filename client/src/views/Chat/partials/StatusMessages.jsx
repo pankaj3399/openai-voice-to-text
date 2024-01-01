@@ -17,7 +17,7 @@ const StatusMessages = ({ recordState, totalElapsedTime, loading, apiCallSuccess
             if (loadingDots === 3) {
                 setLoadingDots(0);
             }
-        }, 1000);
+        }, 250);
 
         // Clear interval when the component unmounts
         return () => clearInterval(interval);

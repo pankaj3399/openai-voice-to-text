@@ -65,6 +65,7 @@ const getChatMessage = async (textMsg, transcript, filePath, totalChunk) => {
       ],
       model: "gpt-4-1106-preview",
       response_format: { type: "json_object" },
+      temperature: 0.0,
     });
     return chatCompletion.choices[0].message;
   } catch (error) {
@@ -112,7 +113,7 @@ const getPromptMessage = async () => {
     }
     [end]
     
-    Your output must be a JSON object articulated in Dutch, excluding any additional elements. It should be detailed and comprehensive, using professional physiotherapy language, and ensure sentence variety to enhance readability.
+    Your output must be a JSON object articulated in English, excluding any additional elements. It should be detailed and comprehensive, using professional physiotherapy language, and ensure sentence variety to enhance readability.
 
     `;
 
