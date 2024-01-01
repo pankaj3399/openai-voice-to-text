@@ -121,7 +121,7 @@ const SignUp = () => {
                     type="submit"
                     className="btn btn-custom btn-block"
                 >
-                    {loading ? 'Signing Up...' : 'Singup'}
+                    {loading ? 'Aanmelden...' : 'Aanmelden'}
                 </button>
 
             </form>}
