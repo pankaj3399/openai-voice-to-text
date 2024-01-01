@@ -8,6 +8,8 @@ import FormData from "form-data";
 import OpenAI from "openai";
 import config from "../../../utils/server/config.js";
 import User from "../../models/userSchema.js";
+import path from "path";
+import { exec } from "child_process";
 
 const apiKey = String(config.OPENAI_SECRET);
 const apiUrl = String(config.OPENAI_URL);
@@ -78,10 +80,9 @@ const getChatMessage = async (textMsg, transcript, filePath, totalChunk) => {
   } finally {
     // remove main audio file
     removeFile(filePath);
-
     // removing chunks file
     if (totalChunk > 0) {
-      for (let i = 1; i <= totalChunk; i++) {
+      for (let i = 0; i < totalChunk; i++) {
         removeFile(`public/output/chunk_${i}.wav`);
       }
     }
@@ -122,27 +123,44 @@ const getPromptMessage = async () => {
 };
 
 // Function to split audio file into chunks
-const splitAudio = async (
-  filePath,
-  outputDirectory = "public/output",
-  chunkSize = 24 * 1024 * 1024
-) => {
+const splitAudio = async (filePath) => {
   try {
-    const audioBuffer = fs.readFileSync(filePath);
-    const totalChunks = Math.ceil(audioBuffer.length / chunkSize);
-    let totalChunk = 0;
+    // const audioBuffer = fs.readFileSync(filePath);
+    // const totalChunks = Math.ceil(audioBuffer.length / chunkSize);
+    // let totalChunk = 0;
+    // // console.log(audioBuffer.toString(), "Buffer");
+    // for (let i = 0; i < totalChunks; i++) {
+    //   totalChunk += 1;
+    //   const start = i * chunkSize;
+    //   const end = Math.min((i + 1) * chunkSize, audioBuffer.length);
+    //   const chunkBuffer = audioBuffer.subarray(start, end);
+    //   console.log("Breaking the buffer: ", start, end);
+    //   // console.log("Chunked Buffer", chunkBuffer.toString());
+    //   const chunkFileName = `${outputDirectory}/chunk_${i + 1}.wav`;
+    //   fs.writeFileSync(chunkFileName, chunkBuffer);
+    // }
+    // console.log("Audio file successfully split into chunks.");
+    // return totalChunk;
+    const outputAudio = path.join("public", "output", "chunk_%d.wav");
 
-    for (let i = 0; i < totalChunks; i++) {
-      totalChunk += 1;
-      const start = i * chunkSize;
-      const end = (i + 1) * chunkSize;
-      const chunkBuffer = audioBuffer.slice(start, end);
+    await new Promise((resolve, reject) => {
+      // 120 second segments
+      const sCommand = `ffmpeg -i "${filePath}" -f segment -segment_time 120 -c copy ${outputAudio}`;
 
-      const chunkFileName = `${outputDirectory}/chunk_${i + 1}.wav`;
-      fs.writeFileSync(chunkFileName, chunkBuffer);
-    }
-    console.log("Audio file successfully split into chunks.");
-    return totalChunk;
+      exec(sCommand, (error, stdout, stderr) => {
+        if (error) {
+          resolve({
+            status: "error",
+          });
+        } else {
+          resolve({
+            status: "success",
+            error: stderr,
+            out: stdout,
+          });
+        }
+      });
+    });
   } catch (error) {
     console.error("Error splitting audio file:", error);
   }
@@ -182,13 +200,14 @@ const CreateChat = catchAsync(async (req, res) => {
     );
   }
 
-  if (fileSizeInMB > 24) {
-    totalChunk = await splitAudio(filePath);
+  if (time > 120) {
+    totalChunk = Math.ceil(time / 120);
+    await splitAudio(filePath);
 
     let fullText = "";
 
     // Transcribe each chunk and append to fullText
-    for (let i = 1; i <= totalChunk; i++) {
+    for (let i = 0; i < totalChunk; i++) {
       const chunkFilePath = `public/output/chunk_${i}.wav`;
       const chunkText = await getAudioToText(
         chunkFilePath,
