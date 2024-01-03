@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import AudioReactRecorder from "audio-react-recorder";
 import { useEffect, useState } from "react";
 import { axiosGET, axiosPOST } from "../../../../hooks/axiosMethods";
@@ -36,6 +37,7 @@ const ChatHeadAudio = ({
   const [audio, setAudio] = useState(null);
   const [recordState, setRecordState] = useState(ENUM_STATUS.NONE);
   const [loading, setLoading] = useState(false);
+  const [getLoading, setGetLoading] = useState(false);
   const [noAudioErr, setNoAudioErr] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [totalElapsedTime, setTotalElapsedTime] = useState(0);
@@ -82,7 +84,7 @@ const ChatHeadAudio = ({
         // send file to gcp storage and then call api to get chat out of it
         try {
           setLoading(true);
-          const res = await axiosGET("chat/upload/gcp", setLoading, token);
+          const res = await axiosGET("chat/upload/gcp", setGetLoading, token);
           const res2 = await fetch(res.url, {
             method: "PUT",
             headers: {
