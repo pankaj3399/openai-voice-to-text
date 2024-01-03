@@ -10,6 +10,16 @@ import config from "../../../utils/server/config.js";
 import User from "../../models/userSchema.js";
 import path from "path";
 import { exec } from "child_process";
+import { dirname } from "path";
+import { Storage } from "@google-cloud/storage";
+import { pipeline } from "stream";
+import { promisify } from "util";
+
+const pipelineAsync = promisify(pipeline);
+
+const bucketName = "saving_audio_bucket";
+const fileNameGCP = "audio.wav";
+const keyFilePath = "public/bucket_key.json"; // Replace with the path to your JSON key file
 
 const apiKey = String(config.OPENAI_SECRET);
 const apiUrl = String(config.OPENAI_URL);
@@ -125,22 +135,6 @@ const getPromptMessage = async () => {
 // Function to split audio file into chunks
 const splitAudio = async (filePath) => {
   try {
-    // const audioBuffer = fs.readFileSync(filePath);
-    // const totalChunks = Math.ceil(audioBuffer.length / chunkSize);
-    // let totalChunk = 0;
-    // // console.log(audioBuffer.toString(), "Buffer");
-    // for (let i = 0; i < totalChunks; i++) {
-    //   totalChunk += 1;
-    //   const start = i * chunkSize;
-    //   const end = Math.min((i + 1) * chunkSize, audioBuffer.length);
-    //   const chunkBuffer = audioBuffer.subarray(start, end);
-    //   console.log("Breaking the buffer: ", start, end);
-    //   // console.log("Chunked Buffer", chunkBuffer.toString());
-    //   const chunkFileName = `${outputDirectory}/chunk_${i + 1}.wav`;
-    //   fs.writeFileSync(chunkFileName, chunkBuffer);
-    // }
-    // console.log("Audio file successfully split into chunks.");
-    // return totalChunk;
     const outputAudio = path.join("public", "output", "chunk_%d.wav");
 
     await new Promise((resolve, reject) => {
@@ -166,11 +160,38 @@ const splitAudio = async (filePath) => {
   }
 };
 
-const CreateChat = catchAsync(async (req, res) => {
+const CreateChatGCP = catchAsync(async (req, res) => {
+  const keyFileContent = fs.readFileSync(
+    path.resolve(dirname("./"), keyFilePath)
+  );
+  const credentials = JSON.parse(keyFileContent);
+
+  // Create a new instance of the Storage class
+  const storage = new Storage({
+    projectId: credentials.project_id,
+    credentials,
+  });
+
+  // Get a reference to the bucket and file
+  const bucket = storage.bucket(bucketName);
+  const file = bucket.file(fileNameGCP);
+
+  // Create a readable stream from the file
+  const readableStream = file.createReadStream();
+
+  // Create a writable stream to save the file locally (you can modify this as needed)
+  const writableStream = fs.createWriteStream("public/files/audio.wav");
+
+  // Use pipelineAsync to handle the stream asynchronously
+
+  await pipelineAsync(readableStream, writableStream);
+  console.log("File download completed.");
+
+  console.log("File downloaded successfully!", res);
   // file paths
-  const filePath = req.file.path;
-  const fileName = req.file.filename;
-  const fileSizeInMB = req.file.size / (1024 * 1024);
+  const filePath = "public/files/audio.wav";
+  const fileName = "audio.wav";
+
   const language = req.body.language;
   const time = req.body.time;
   let text;
@@ -285,4 +306,4 @@ const CreateChat = catchAsync(async (req, res) => {
   });
 });
 
-export default CreateChat;
+export default CreateChatGCP;

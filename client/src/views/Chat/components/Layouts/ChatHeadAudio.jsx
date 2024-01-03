@@ -1,6 +1,6 @@
 import AudioReactRecorder from "audio-react-recorder";
 import { useEffect, useState } from "react";
-import { axiosPOST } from "../../../../hooks/axiosMethods";
+import { axiosGET, axiosPOST } from "../../../../hooks/axiosMethods";
 import { useAtom } from "jotai";
 import { atomToken, atomUser } from "../../../../configs/states/atomState";
 import { ENUM_STATUS } from "../../../../configs/constants";
@@ -30,7 +30,7 @@ const ChatHeadAudio = ({
   // atom states
   const [token] = useAtom(atomToken);
   const [user] = useAtom(atomUser);
-  const {refetchUser} = useAuthCheck();
+  const { refetchUser } = useAuthCheck();
   // states
   // eslint-disable-next-line no-unused-vars
   const [audio, setAudio] = useState(null);
@@ -60,8 +60,8 @@ const ChatHeadAudio = ({
 
   const startPausedRecording = () => {
     setRecordState(ENUM_STATUS.START);
-    setStartTime(new Date())
-  }
+    setStartTime(new Date());
+  };
 
   const stopRecording = () => {
     if (recordState === ENUM_STATUS.START) {
@@ -73,40 +73,43 @@ const ChatHeadAudio = ({
   const onSave = async (audioData) => {
     setAudio(audioData);
 
-    // Create an audio context
-    // const audioContext = new (window.AudioContext ||
-    //   window.webkitAudioContext)();
-
-    // Load the audio data
-    // const audioBuffer = await audioContext.decodeAudioData(
-    //   await audioData.blob.arrayBuffer()
-    // );
-
-    // Calculate the average audio level
-    // const audioDataArray = audioBuffer.getChannelData(0);
-    // const audioLevel =
-    //   audioDataArray.reduce((sum, value) => sum + Math.abs(value), 0) /
-    //   audioDataArray.length;
-
-    // const audioLevelThreshold = 0.01; // Adjust this threshold value
-
     if (totalElapsedTime >= 10) {
       setNoAudioErr(false);
 
       // Send the audio file to the server
       if (audioData.blob && !noAudioErr) {
-        const formData = new FormData();
-        formData.append("audio", audioData.blob, "audio.wav");
-        formData.append("language", selectedLanguage);
-        formData.append("time", totalElapsedTime);
-
+        console.log(audioData.blob, "Hi");
+        // send file to gcp storage and then call api to get chat out of it
         try {
-          const response = await axiosPOST("chat", formData, setLoading, token);
-          setApiCalSuccess(response.success);
-          setTextContent(response.data?.array);
-          setOnLocalStorage("responses", JSON.stringify(response.data?.array));
-          setOnLocalStorage("userId", user._id);
-          await refetchUser();
+          setLoading(true);
+          const res = await axiosGET("chat/upload/gcp", setLoading, token);
+          const res2 = await fetch(res.url, {
+            method: "PUT",
+            headers: {
+              "Content-Type": audioData.blob.type,
+            },
+            body: audioData.blob,
+          });
+          if (res2.ok) {
+            console.log("File uploaded successfully!");
+            const response = await axiosPOST(
+              "chat/gcp",
+              { language: selectedLanguage, time: totalElapsedTime },
+              setLoading,
+              token
+            );
+            setApiCalSuccess(response.success);
+            setTextContent(response.data?.array);
+            setOnLocalStorage(
+              "responses",
+              JSON.stringify(response.data?.array)
+            );
+            setOnLocalStorage("userId", user._id);
+            await refetchUser();
+          } else {
+            console.error("File upload failed:", res2.statusText);
+            throw new Error(res2.statusText);
+          }
         } catch (error) {
           setLoading(false);
           setRecordState(ENUM_STATUS.PAUSE);
@@ -141,7 +144,6 @@ const ChatHeadAudio = ({
     removeFromLocalStorage("responses");
     removeFromLocalStorage("userId");
   };
-
 
   useEffect(() => {
     if (recordState === ENUM_STATUS.START) {

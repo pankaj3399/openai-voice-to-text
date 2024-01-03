@@ -1,27 +1,12 @@
-import express from 'express'
-import multer from 'multer';
+import express from "express";
 const router = express.Router();
 
-import CreateChat from '../controllers/chat/CreateChat.js';
-
-import auth from '../middleware/auth.js';
-
-const storage = multer.diskStorage({
-    destination: 'public/files/',
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        const newFilename = uniqueSuffix + '-' + file.originalname;
-        cb(null, newFilename);
-    },
-});;
-const upload = multer({ storage: storage });
+import auth from "../middleware/auth.js";
+import GCPSignedUrl from "../controllers/chat/GCPSignedUrl.js";
+import CreateChatGCP from "../controllers/chat/CreateChatGCP.js";
 
 //routes
-router.post(
-    '/',
-    auth(),
-    upload.single('audio'),
-    CreateChat
-);
+router.post("/gcp", auth(), CreateChatGCP);
+router.get("/upload/gcp", GCPSignedUrl);
 
 export default router;
