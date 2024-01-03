@@ -18,7 +18,6 @@ import { promisify } from "util";
 const pipelineAsync = promisify(pipeline);
 
 const bucketName = "saving_audio_bucket";
-const fileNameGCP = "audio.wav";
 const keyFilePath = "public/bucket_key.json"; // Replace with the path to your JSON key file
 
 const apiKey = String(config.OPENAI_SECRET);
@@ -161,6 +160,7 @@ const splitAudio = async (filePath) => {
 };
 
 const CreateChatGCP = catchAsync(async (req, res) => {
+  const fileName = `audio_${req?.user?._id}.wav`;
   const keyFileContent = fs.readFileSync(
     path.resolve(dirname("./"), keyFilePath)
   );
@@ -174,7 +174,7 @@ const CreateChatGCP = catchAsync(async (req, res) => {
 
   // Get a reference to the bucket and file
   const bucket = storage.bucket(bucketName);
-  const file = bucket.file(fileNameGCP);
+  const file = bucket.file(fileName);
 
   // Create a readable stream from the file
   const readableStream = file.createReadStream();
@@ -189,8 +189,7 @@ const CreateChatGCP = catchAsync(async (req, res) => {
 
   console.log("File downloaded successfully!", res);
   // file paths
-  const filePath = "public/files/audio.wav";
-  const fileName = "audio.wav";
+  const filePath = `public/files/audio_${req?.user?._id}.wav`;
 
   const language = req.body.language;
   const time = req.body.time;
