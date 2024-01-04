@@ -7,6 +7,6 @@ import CreateChatGCP from "../controllers/chat/CreateChatGCP.js";
 
 //routes
 router.post("/gcp", auth(), CreateChatGCP);
-router.get("/upload/gcp", GCPSignedUrl);
+router.get("/upload/gcp", auth(), GCPSignedUrl);
 
 export default router;

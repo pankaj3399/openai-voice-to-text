@@ -180,7 +180,7 @@ const CreateChatGCP = catchAsync(async (req, res) => {
   const readableStream = file.createReadStream();
 
   // Create a writable stream to save the file locally (you can modify this as needed)
-  const writableStream = fs.createWriteStream("public/files/audio.wav");
+  const writableStream = fs.createWriteStream(`public/files/${fileName}`);
 
   // Use pipelineAsync to handle the stream asynchronously
 
