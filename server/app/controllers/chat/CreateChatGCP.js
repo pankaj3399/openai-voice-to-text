@@ -92,7 +92,7 @@ const getChatMessage = async (textMsg, transcript, filePath, totalChunk) => {
     // removing chunks file
     if (totalChunk > 0) {
       for (let i = 0; i < totalChunk; i++) {
-        removeFile(`public/output/chunk_${i}.wav`);
+        removeFile(`tmp/output/chunk_${i}.wav`);
       }
     }
   }
@@ -134,7 +134,7 @@ const getPromptMessage = async () => {
 // Function to split audio file into chunks
 const splitAudio = async (filePath) => {
   try {
-    const outputAudio = path.join("public", "output", "chunk_%d.wav");
+    const outputAudio = path.join("tmp", "output", "chunk_%d.wav");
 
     await new Promise((resolve, reject) => {
       // 120 second segments
@@ -180,7 +180,7 @@ const CreateChatGCP = catchAsync(async (req, res) => {
   const readableStream = file.createReadStream();
 
   // Create a writable stream to save the file locally (you can modify this as needed)
-  const writableStream = fs.createWriteStream(`public/files/${fileName}`);
+  const writableStream = fs.createWriteStream(`tmp/files/${fileName}`);
 
   // Use pipelineAsync to handle the stream asynchronously
 
@@ -189,7 +189,7 @@ const CreateChatGCP = catchAsync(async (req, res) => {
 
   console.log("File downloaded successfully!", res);
   // file paths
-  const filePath = `public/files/audio_${req?.user?._id}.wav`;
+  const filePath = `tmp/files/audio_${req?.user?._id}.wav`;
 
   const language = req.body.language;
   const time = req.body.time;
@@ -228,7 +228,7 @@ const CreateChatGCP = catchAsync(async (req, res) => {
 
     // Transcribe each chunk and append to fullText
     for (let i = 0; i < totalChunk; i++) {
-      const chunkFilePath = `public/output/chunk_${i}.wav`;
+      const chunkFilePath = `tmp/output/chunk_${i}.wav`;
       const chunkText = await getAudioToText(
         chunkFilePath,
         `chunk_${i}.wav`,
