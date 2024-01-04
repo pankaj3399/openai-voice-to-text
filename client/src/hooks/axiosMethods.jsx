@@ -3,11 +3,13 @@ import toast from 'react-hot-toast';
 
 // main url
 const mainUrl = import.meta.env.VITE_BACKEND_URL;
+console.log(import.meta.env.VITE_BACKEND_URL)
 
 // get method
 export const axiosGET = async (url, setLoad, token) => {
     try {
         setLoad(true);
+        console.log(url)
         const response = await axios.get(`${mainUrl}${url}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
