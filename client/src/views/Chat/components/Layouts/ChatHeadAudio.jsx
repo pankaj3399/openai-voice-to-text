@@ -46,10 +46,10 @@ const ChatHeadAudio = ({
   // handler
   const startRecording = () => {
     setApiCalSuccess(false);
-    if (recordState !== ENUM_STATUS.START) {
-      setStartTime(new Date());
-      setTotalElapsedTime(0);
-    }
+    // if (recordState !== ENUM_STATUS.START) {
+    setStartTime(new Date());
+    setTotalElapsedTime(0);
+    // }
     setRecordState(ENUM_STATUS.START);
   };
 
