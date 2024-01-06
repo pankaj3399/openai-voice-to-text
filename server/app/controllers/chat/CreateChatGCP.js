@@ -70,7 +70,13 @@ const getAudioToText = async (path, fileName, languageCode) => {
 };
 
 // get open ai chat message
-const getChatMessage = async (textMsg, transcript, filePath, totalChunk) => {
+const getChatMessage = async (
+  textMsg,
+  transcript,
+  filePath,
+  totalChunk,
+  userId
+) => {
   try {
     console.log(transcript, "Sending this to chat gpt....");
     const chatCompletion = await openai.chat.completions.create({
@@ -95,7 +101,7 @@ const getChatMessage = async (textMsg, transcript, filePath, totalChunk) => {
     // removing chunks file
     if (totalChunk > 0) {
       for (let i = 0; i < totalChunk; i++) {
-        removeFile(`/tmp/output/chunk_${i}.wav`);
+        removeFile(`/tmp/output/${userId}/chunk_${i}.wav`);
       }
     }
   }
@@ -135,53 +141,57 @@ const getPromptMessage = async () => {
 };
 
 // Function to split audio file into chunks
-const splitAudio = async (filePath) => {
+const splitAudio = async (filePath, userId) => {
   try {
-    const outputAudio = path.join("/tmp", "output", "chunk_%d.wav");
+    const outputAudio = path.join(
+      "/tmp",
+      "output",
+      `${userId}`,
+      "chunk_%d.wav"
+    );
 
     await new Promise((resolve, reject) => {
       // 120 second segments
       const sCommand = `ffmpeg -i "${filePath}" -f segment -segment_time 120 -c copy ${outputAudio}`;
 
       exec(sCommand, (error, stdout, stderr) => {
-      if (error) {
-        console.error("Exec error:", error);
-        reject(error);
-      } else {
-        console.log("Exec stdout:", stdout);
-        console.log("Exec stderr:", stderr);
-        resolve({
-          status: "success",
-          error: stderr,
-          out: stdout,
-        });
-      }
-    });
+        if (error) {
+          console.error("Exec error:", error);
+          reject(error);
+        } else {
+          console.log("Exec stdout:", stdout);
+          console.log("Exec stderr:", stderr);
+          resolve({
+            status: "success",
+            error: stderr,
+            out: stdout,
+          });
+        }
+      });
     });
   } catch (error) {
     console.error("Error splitting audio file:", error);
   }
 };
 
-const ensureTmpDirsExist = () => {
-    const tmpOutputDir = path.join('/tmp', 'output');
-    const tmpFilesDir = path.join('/tmp', 'files');
+const ensureTmpDirsExist = (userId) => {
+  const tmpOutputDir = path.join("/tmp", "output", `${userId}`);
+  const tmpFilesDir = path.join("/tmp", "files");
 
-    // Check if the output directory already exists, if not, create it
-    if (!fs.existsSync(tmpOutputDir)) {
-        fs.mkdirSync(tmpOutputDir, { recursive: true });
-    }
+  // Check if the output directory already exists, if not, create it
+  if (!fs.existsSync(tmpOutputDir)) {
+    fs.mkdirSync(tmpOutputDir, { recursive: true });
+  }
 
-    // Check if the files directory already exists, if not, create it
-    if (!fs.existsSync(tmpFilesDir)) {
-        fs.mkdirSync(tmpFilesDir, { recursive: true });
-    }
-}
-
+  // Check if the files directory already exists, if not, create it
+  if (!fs.existsSync(tmpFilesDir)) {
+    fs.mkdirSync(tmpFilesDir, { recursive: true });
+  }
+};
 
 const CreateChatGCP = catchAsync(async (req, res) => {
   const fileName = `audio_${req?.user?._id}.wav`;
-  ensureTmpDirsExist();
+  ensureTmpDirsExist(req?.user?._id);
 
   const storage = new Storage();
 
@@ -235,13 +245,13 @@ const CreateChatGCP = catchAsync(async (req, res) => {
 
   if (time > 120) {
     totalChunk = Math.ceil(time / 120);
-    await splitAudio(filePath);
+    await splitAudio(filePath, req?.user?._id);
 
     let fullText = "";
 
     // Transcribe each chunk and append to fullText
     for (let i = 0; i < totalChunk; i++) {
-      const chunkFilePath = `/tmp/output/chunk_${i}.wav`;
+      const chunkFilePath = `/tmp/output/${req?.user?._id}/chunk_${i}.wav`;
       const chunkText = await getAudioToText(
         chunkFilePath,
         `chunk_${i}.wav`,
@@ -262,7 +272,13 @@ const CreateChatGCP = catchAsync(async (req, res) => {
   const promtMsg = await getPromptMessage();
 
   // get assistant response
-  const chatData = await getChatMessage(promtMsg, text, filePath, totalChunk);
+  const chatData = await getChatMessage(
+    promtMsg,
+    text,
+    filePath,
+    totalChunk,
+    req?.user?._id
+  );
 
   // Split the content into lines
   const lines = chatData.content.split("\n");

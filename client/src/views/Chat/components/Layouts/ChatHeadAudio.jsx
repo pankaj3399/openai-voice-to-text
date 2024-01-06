@@ -36,9 +36,11 @@ const ChatHeadAudio = ({
   // eslint-disable-next-line no-unused-vars
   const [audio, setAudio] = useState(null);
   const [recordState, setRecordState] = useState(ENUM_STATUS.NONE);
+  const [recordState2, setRecordState2] = useState(ENUM_STATUS.NONE);
   const [loading, setLoading] = useState(false);
   const [getLoading, setGetLoading] = useState(false);
   const [noAudioErr, setNoAudioErr] = useState(false);
+  const [audioWarning, setAudioWarning] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [totalElapsedTime, setTotalElapsedTime] = useState(0);
   const [selectedLanguage, setSelectedLanguage] = useState("nl"); // Set the default language
@@ -51,6 +53,7 @@ const ChatHeadAudio = ({
     setTotalElapsedTime(0);
     // }
     setRecordState(ENUM_STATUS.START);
+    setRecordState2(ENUM_STATUS.START);
   };
 
   const pauseRecording = () => {
@@ -70,6 +73,31 @@ const ChatHeadAudio = ({
       updateTotalElapsedTime();
     }
     setRecordState(ENUM_STATUS.STOP);
+  };
+
+  const checkAudioLevel = async (audioData) => {
+    console.log("Checking audio level");
+    // Create an audio context
+    const audioContext = new (window.AudioContext ||
+      window.webkitAudioContext)();
+
+    // Load the audio data
+    const audioBuffer = await audioContext.decodeAudioData(
+      await audioData.blob.arrayBuffer()
+    );
+
+    // Calculate the average audio level
+    const audioDataArray = audioBuffer.getChannelData(0);
+    const audioLevel =
+      audioDataArray.reduce((sum, value) => sum + Math.abs(value), 0) /
+      audioDataArray.length;
+
+    const audioLevelThreshold = 0.01; // Adjust this threshold value
+    if (audioLevel < audioLevelThreshold) {
+      setAudioWarning(true);
+    } else {
+      setAudioWarning(false);
+    }
   };
 
   const onSave = async (audioData) => {
@@ -132,6 +160,13 @@ const ChatHeadAudio = ({
     }
   };
 
+  const stopAndStartSecondRecorder = () => {
+    setRecordState2(ENUM_STATUS.STOP);
+    setTimeout(() => {
+      setRecordState2(ENUM_STATUS.START);
+    }, 1000);
+  };
+
   const handleLanguageChange = (event) => {
     setSelectedLanguage(event.target.value);
   };
@@ -151,7 +186,11 @@ const ChatHeadAudio = ({
     if (recordState === ENUM_STATUS.START) {
       setStartTime(new Date());
       const intervalId = setInterval(updateTotalElapsedTime, 1000);
-      return () => clearInterval(intervalId);
+      const intervalId2 = setInterval(stopAndStartSecondRecorder, 5000);
+      return () => {
+        clearInterval(intervalId);
+        clearInterval(intervalId2);
+      };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [recordState]);
@@ -170,6 +209,13 @@ const ChatHeadAudio = ({
         <AudioReactRecorder
           state={recordState}
           onStop={onSave}
+          canvasWidth={0}
+          canvasHeight={0}
+        />
+
+        <AudioReactRecorder
+          state={recordState2}
+          onStop={checkAudioLevel}
           canvasWidth={0}
           canvasHeight={0}
         />
@@ -303,7 +349,7 @@ const ChatHeadAudio = ({
         </div>
       )}
 
-      {noAudioErr && (
+      {(noAudioErr || audioWarning) && (
         <div className="mt-3 mb-3 text-center warning-message">
           Geen geluid gedetecteerd, controleer je audio en refresh de pagina.
         </div>
