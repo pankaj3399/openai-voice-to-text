@@ -18,7 +18,6 @@ import { promisify } from "util";
 const pipelineAsync = promisify(pipeline);
 
 const bucketName = "saving_audio_bucket";
-const keyFilePath = "public/bucket_key.json"; // Replace with the path to your JSON key file
 
 const apiKey = String(config.OPENAI_SECRET);
 const apiUrl = String(config.OPENAI_URL);
@@ -128,7 +127,7 @@ const getPromptMessage = async () => {
     }
     [end]
     
-    Your output must be a JSON object articulated in English, excluding any additional elements. It should be detailed and comprehensive, using professional physiotherapy language, and ensure sentence variety to enhance readability.
+    Your output must be a JSON object articulated in Dutch, excluding any additional elements. It should be detailed and comprehensive, using professional physiotherapy language, and ensure sentence variety to enhance readability.
 
     `;
 
@@ -183,18 +182,10 @@ const ensureTmpDirsExist = () => {
 const CreateChatGCP = catchAsync(async (req, res) => {
   const fileName = `audio_${req?.user?._id}.wav`;
   ensureTmpDirsExist();
-  const keyFileContent = fs.readFileSync(
-    path.resolve(dirname("./"), keyFilePath)
-  );
-  const credentials = JSON.parse(keyFileContent);
 
-  // Create a new instance of the Storage class
-  const storage = new Storage({
-    projectId: credentials.project_id,
-    credentials,
-  });
+  const storage = new Storage();
 
-  // Get a reference to the bucket and file
+  // Rest of your code remains the same
   const bucket = storage.bucket(bucketName);
   const file = bucket.file(fileName);
 

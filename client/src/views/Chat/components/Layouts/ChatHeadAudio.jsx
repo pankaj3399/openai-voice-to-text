@@ -305,7 +305,7 @@ const ChatHeadAudio = ({
 
       {noAudioErr && (
         <div className="mt-3 mb-3 text-center warning-message">
-          Geen geluid gedetecteerd, controleer je audio.
+          Geen geluid gedetecteerd, controleer je audio en refresh de pagina.
         </div>
       )}
     </>

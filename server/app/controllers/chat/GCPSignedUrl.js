@@ -7,21 +7,14 @@ import { dirname } from "path";
 import { Storage } from "@google-cloud/storage";
 
 const bucketName = "saving_audio_bucket";
-const keyFilePath = "public/bucket_key.json"; // Replace with the path to your JSON key file
 
 const GCPSignedUrl = catchAsync(async (req, res) => {
   const fileName = `audio_${req?.user?._id}.wav`;
   // Load the service account key from the JSON file
-  const keyFileContent = fs.readFileSync(
-    path.resolve(dirname("./"), keyFilePath)
-  );
-  const credentials = JSON.parse(keyFileContent);
+
 
   // Create a new instance of the Storage class
-  const storage = new Storage({
-    projectId: credentials.project_id,
-    credentials,
-  });
+    const storage = new Storage();
 
   // Get a reference to the bucket and file
   const bucket = storage.bucket(bucketName);
